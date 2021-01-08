@@ -1,0 +1,416 @@
+#pragma once
+#include"JsonFile.hpp"
+#include"../Object/Composite/composite.hpp"
+#include"../Object/ObjectArray/objectArray.hpp"
+#include"../Object/Primitive/primitive.hpp"
+#include"../Util/RegexUtil.hpp"
+#include<stack>
+#include<fstream>
+#include<assert.h>
+
+Object* JsonFile::parse(std::istream& in) {
+    
+    std::string bucket;
+    std::stack<char> parenthesesStack;
+    std::stack<Object*> objectStack;
+    
+    Object* res = nullptr;
+    char curr;
+    in.read(&curr, 1);
+    if (curr == '{') {
+        res = new Composite();
+    } else if (curr == '[') {
+        res = new ObjectArray();
+    } else {
+        std::string content;
+        char c;
+        while (in.read(&c, 1)) {
+            content += c;
+        }
+        
+        if (RegexUtil::isNonNumericPrimitive(content)) {
+            res = new Primitive(content);
+        }
+        
+        return res;
+    }
+
+    objectStack.push(res);
+    parenthesesStack.push(curr);
+
+    bool inQuotes = false;
+    bool isEscaped = false;
+    while(in.read(&curr, 1)) {
+        if (!inQuotes && !bucket.empty() && (curr == '}' || curr == ']')) {
+
+            if (curr == '}' && RegexUtil::isKeyNumericPrimitive(bucket)) {
+                std::pair<std::string, std::string> bucketAsPair = RegexUtil::splitPair(bucket);
+                objectStack.top()->addChild(bucketAsPair.first, new Primitive(bucketAsPair.second));
+            } else if (curr == ']' && RegexUtil::isNumericPrimitive(bucket)) {
+                objectStack.top()->addChild("", new Primitive(bucket));
+            } else {
+                res->destroy();
+                delete res;
+                return nullptr;
+            }
+            
+            bucket = curr;
+
+        } else if (!inQuotes && !bucket.empty() && curr == ',') {
+            if (objectStack.top()->getType() == COMPOSITE && RegexUtil::isKeyNumericPrimitive(bucket)) {
+                std::pair<std::string, std::string> bucketAsPair = RegexUtil::splitPair(bucket);
+                objectStack.top()->addChild(bucketAsPair.first, new Primitive(bucketAsPair.second));
+            } else if (objectStack.top()->getType() == ARRAY && RegexUtil::isNumericPrimitive(bucket)) {
+                objectStack.top()->addChild("", new Primitive(bucket));
+            } else {
+                std::cout << bucket << '\n';
+                assert(false);
+            }
+
+            bucket.clear();
+
+        } else if (!inQuotes && (curr == ' ' || curr == '\n' || curr == '\r' || curr == '\v' || curr == '\f' || curr == '\t')
+            || bucket.empty() && curr == ',') {
+            continue;
+        } else {
+            bucket += curr;
+            if (curr == '\\' && !isEscaped) {
+                isEscaped = true;
+            } else {
+                if (curr == '\"' && !isEscaped) {
+                    inQuotes = !inQuotes;
+                }
+                isEscaped = false;
+            }
+        }      
+
+        if (bucket == "}" || bucket == "]") {
+
+            objectStack.pop();
+            parenthesesStack.pop();
+            bucket.clear();
+        
+        } else if (parenthesesStack.top() == '{' && RegexUtil::isKeyNewObject(bucket)
+                    || parenthesesStack.top() == '[' && bucket == "{") {
+            Object* newObj = new Composite();
+            objectStack.top()->addChild(RegexUtil::splitPair(bucket).first, newObj);
+            objectStack.push(newObj);
+            parenthesesStack.push('{');
+            bucket.clear();
+
+        } else if (parenthesesStack.top() == '{' && RegexUtil::isKeyNewArray(bucket)
+                    || parenthesesStack.top() == '[' && bucket == "[") {
+
+            Object* newObj = new ObjectArray();
+            objectStack.top()->addChild(RegexUtil::splitPair(bucket).first, newObj);
+            objectStack.push(newObj);
+            parenthesesStack.push('[');
+            bucket.clear();
+        
+        } else if (parenthesesStack.top() == '{' && RegexUtil::isKeyNonNumericPrimitive(bucket)
+                    || parenthesesStack.top() == '[' && RegexUtil::isNonNumericPrimitive(bucket)) {
+
+            std::pair<std::string, std::string> bucketPair = RegexUtil::splitPair(bucket);
+            Object* newObj = new Primitive(bucketPair.second);
+            objectStack.top()->addChild(RegexUtil::splitPair(bucket).first, newObj);
+            bucket.clear();
+        }
+    }
+    return res;
+}
+
+void JsonFile::load(const std::string& filePath) {
+    std::ifstream in(filePath);
+    if (!(in && in.good())) {
+        throw std::invalid_argument("bad file\n");
+    }
+    if (!(fileIsBalanced(filePath))) {
+        throw std::invalid_argument("unbalanced file\n");
+    }
+    Object* temp = parse(in);
+    if (temp) {
+        root = temp;
+    } else {
+        throw std::invalid_argument("file does not match json file\n");
+    }
+}
+
+bool JsonFile::sourceIsBalanced(std::istream& in)const {
+    std::stack<char> parentheses;
+    bool inQuotes = false;
+    bool isEscaped = false;
+    char curr; 
+    while(in.read(&curr, 1)) {        
+        if (curr == '\\' && !isEscaped) {
+            isEscaped = true;
+        } else {
+            if (curr == '\"' && !isEscaped) {
+                inQuotes = !inQuotes;
+            } else if (!inQuotes && (curr == '{' || curr == '[')) {
+                parentheses.push(curr);
+            } else if (!inQuotes && curr == '}') {
+                if (parentheses.empty() || parentheses.top() != '{') {
+                    return false;
+                }
+                parentheses.pop();
+            } else if (!inQuotes && curr == ']') {
+                if (parentheses.empty() || parentheses.top() != '[') {
+                    return false;
+                }
+                parentheses.pop();
+            }
+            isEscaped = false;
+        }
+    }
+    return !isEscaped && !inQuotes && parentheses.empty();
+}
+
+bool JsonFile::stringIsBalanced(const std::string& str)const {
+    std::stringstream ss(str);
+    return sourceIsBalanced(ss);
+}
+
+bool JsonFile::fileIsBalanced(const std::string& string)const {
+    std::ifstream in(string);
+    if (!in || !in.good()) {
+        return false;
+    }
+    return sourceIsBalanced(in);
+}
+
+void JsonFile::print(Object* rootObj, std::ostream& out, const bool& concise)const {
+    if (rootObj->getType() == PRIMITIVE) {
+        out << rootObj->toString();
+        return;
+    }
+
+    std::stack<std::pair<std::pair<std::string, Object*>, int>> printStack;
+    printStack.push(std::make_pair(std::make_pair("", rootObj), 0));
+    
+    out << rootObj->opener();
+    if (!concise && rootObj->getType() != PRIMITIVE) {
+        out << '\n';
+    }
+    while (!printStack.empty()) {
+        Object* currObj = printStack.top().first.second;
+        int currIndex = printStack.top().second;
+        std::pair<std::string, Object*> next = currObj->getNth(currIndex);
+
+
+        if (next.first == "" && next.second == nullptr) {
+            out << currObj->closer();
+            printStack.pop();
+            if (!printStack.empty()) {
+                printStack.top().second++;
+            }
+
+        } else {
+            if (currIndex != 0) {
+                out << ',';
+                if (!concise) {
+                    out << '\n';
+                }
+            }
+            if (!concise) {
+                printNTabs(printStack.size(), out);
+            }
+
+            if (next.second->getType() == PRIMITIVE) {
+                out << next.first << next.second->toString();
+                printStack.top().second++;
+
+            } else {
+                out << next.first << next.second->opener();
+                printStack.push(std::make_pair(next, 0));
+            }
+        }
+    }
+    std::cout << '\n';
+}
+
+void JsonFile::printNTabs(const size_t& n, std::ostream& out)const {
+    for (int i = 0; i < n; i++) {
+        out << '\t';
+    }
+}
+
+
+void JsonFile::print(const std::string& object, std::ostream& out, const bool& concise)const {
+    Object* subObject = get(object);
+    if (subObject) {
+        print(subObject, out, concise);
+    } else {
+        throw std::invalid_argument("no object exists at this path");
+    }
+}
+
+void JsonFile::print(const std::string& object, const bool& concise)const {
+    print(object, std::cout, concise);
+}
+
+
+JsonFile::JsonFile(): root{nullptr} {
+}
+JsonFile::~JsonFile() {
+    if (root) {
+        root->destroy();
+        delete root;
+    }
+}
+
+Object* JsonFile::get(const std::string& query)const {
+    return get(root, query);
+}
+
+Object* JsonFile::get(Object* obj, const std::string& query)const {
+    if (query.empty()) {
+        return obj;
+    }
+    if (query.find('.') == std::string::npos) {
+        return obj->get(query);
+    } else {
+        int splitIndex = query.find('.');
+        return get(obj->get(query.substr(0, splitIndex)), (query.substr(splitIndex + 1)));
+    }
+    return nullptr;
+}
+
+void JsonFile::upliftPrimitive(Object* destination, const std::string& dest) {
+    std::string oldVal = destination->toString();
+    std::pair<std::string, std::string> destinationAndParent = RegexUtil::splitAtLastDot(dest);
+    removeElement(dest, true);
+    Object* parent = get(destinationAndParent.first);
+    destination = new ObjectArray();
+    parent->addChild(destinationAndParent.second, destination);
+    destination->addChild("", new Primitive(oldVal));
+}
+
+void JsonFile::attachObjectFromString(const std::string& src, const std::string& dest, const std::string& name) {
+    Object* parent = get(dest);
+    if (!parent) {
+        throw std::invalid_argument("no such element in json file\n");
+    }
+
+    if (stringIsBalanced(src)) {
+        if (parent->getType() == PRIMITIVE) {
+            upliftPrimitive(parent, dest);
+        }
+        if (parent->getType() == COMPOSITE && !RegexUtil::isStringPrimitive(name)) {
+            throw std::invalid_argument("name is not a valid json string\n");
+        }
+        std::stringstream objString(src);
+        parent->addChild(name, parse(objString));
+    } else {
+        throw std::invalid_argument("invalid json input\n");
+    }
+}
+
+void JsonFile::changeElement(const std::string& dest, const std::string& src) {
+    if (dest.empty()) {
+        root->destroy();
+        delete root;
+        std::stringstream sourceStream(src);
+        root = parse(sourceStream);
+    }
+
+    if (!get(dest)) {
+        throw std::invalid_argument("no such element\n");
+    }
+
+    removeElement(dest, true);
+    std::pair<std::string, std::string> beforeAndAfterDot = RegexUtil::splitAtLastDot(dest);
+    
+    Object* toAdd;
+    if (stringIsBalanced(src)) {
+        std::stringstream sourceStream(src);
+        toAdd = parse(sourceStream);
+    } else {
+        throw std::invalid_argument("invalid json input\n");
+    }
+
+    if (toAdd) {
+        get(beforeAndAfterDot.first)->addChild(beforeAndAfterDot.second, toAdd);
+    } else {
+        throw std::invalid_argument("invalid json input\n");
+    }
+
+
+}
+
+void JsonFile::removeElement(const std::string& str, const bool& destroyMode) {
+    std::pair<std::string, std::string> getPartAndRemovePart = RegexUtil::splitAtLastDot(str);
+
+    if (get(str)) {
+        get(getPartAndRemovePart.first)->remove(getPartAndRemovePart.second, destroyMode);
+    } else {
+        throw new std::invalid_argument("no such element\n");
+    }
+}
+
+void JsonFile::moveElement(const std::string& src, const std::string& dest) {
+    Object* destination = get(dest);
+    Object* source = get(src); 
+
+    if (!destination || !source) {
+        throw std::invalid_argument("no such element \n");
+    }
+
+    if (destination->getType() == PRIMITIVE) {
+        upliftPrimitive(destination, dest);
+    }
+
+    removeElement(src, false);
+    destination->addChild(RegexUtil::splitAtLastDot(src).second, source);
+}
+
+void JsonFile::sortArray(const std::string& str) {
+    Object* obj = get(str);
+    if (obj) {
+        obj->sort();
+    } else {
+        throw std::invalid_argument("no such element");
+    }
+}
+
+
+std::vector<Object*> JsonFile::findByKey(const std::string& key)const {
+    std::vector<Object*> res;
+    if (root) {
+        root->findByKeyHelper(key, res);
+    }
+    return res;
+}
+
+void JsonFile::getAllByKey(const std::string& key, const std::string& destination)const {
+    std::vector<Object*> objs = findByKey(key);
+    Object* array = new ObjectArray();
+    for (Object* obj : objs) {
+        array->addChild("", obj);
+    }
+
+    if (destination.empty()) {
+        print(array, std::cout, false);
+    } else {
+        std::ofstream out(destination);
+        print(array, out, false);
+    }
+
+    objs.clear(); // so as not to trigger object destructors
+    delete array;
+}
+
+void JsonFile::getNthByKey(const std::string& key, const int& index, const std::string& destination)const {
+    std::vector<Object*> objs = findByKey(key);
+    if (0 < index && index < objs.size()) {
+        if (destination.empty()) {
+            print(objs[index], std::cout, false);
+        } else {
+            std::ofstream out(destination);
+            print(objs[index], out, false);
+        }
+    } else {
+        throw new std::out_of_range("invalid index\n");
+    }
+
+    objs.clear(); // so as not to trigger object destructors
+}
