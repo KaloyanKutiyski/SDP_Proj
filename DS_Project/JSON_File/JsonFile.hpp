@@ -35,4 +35,5 @@ class JsonFile {
 
     void print(const std::string&, std::ostream&, const bool&)const;
     void print(const std::string&, const bool&)const;
+    void print(const std::string&, std::string&, const bool&)const;
 };

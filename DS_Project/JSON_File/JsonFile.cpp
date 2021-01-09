@@ -53,7 +53,6 @@ void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& ob
 }
 
 Object* JsonFile::parse(std::istream& in) {
-    
     std::string bucket;
     std::stack<Object*> objectStack;
     
@@ -144,7 +143,7 @@ Object* JsonFile::parse(std::istream& in) {
 
 void JsonFile::load(const std::string& filePath) {
     std::ifstream in(filePath);
-    if (!(in && in.good())) {
+    if (!in || !in.good()) {
         throw std::invalid_argument("bad file\n");
     }
     if (!(fileIsBalanced(filePath))) {
@@ -232,10 +231,7 @@ void JsonFile::print(Object* rootObj, std::ostream& out, const bool& concise)con
 
         } else {
             if (currIndex != 0) {
-                out << ',';
-                if (!concise) {
-                    out << '\n';
-                }
+                out << ',' << concise ? "\n" : "";
             }
             if (!concise) {
                 printNTabs(printStack.size(), out);
@@ -272,6 +268,14 @@ void JsonFile::print(const std::string& object, std::ostream& out, const bool& c
 
 void JsonFile::print(const std::string& object, const bool& concise)const {
     print(object, std::cout, concise);
+}
+
+void JsonFile::print(const std::string& object, std::string& output, const bool& conscise)const {
+    std::stringstream ss;
+    print(get(object), ss, conscise);
+    while(ss) {
+        ss >> output;
+    }
 }
 
 
@@ -316,57 +320,62 @@ void JsonFile::attachObjectFromString(const std::string& src, const std::string&
     if (!parent) {
         throw std::invalid_argument("no such element in json file\n");
     }
-
-    if (stringIsBalanced(src)) {
-        if (parent->getType() == PRIMITIVE) {
-            upliftPrimitive(parent, dest);
-        }
-        if (parent->getType() == COMPOSITE && !RegexUtil::isStringPrimitive(name)) {
-            throw std::invalid_argument("name is not a valid json string\n");
-        }
-        std::stringstream objString(src);
-        parent->addChild(name, parse(objString));
-    } else {
-        throw std::invalid_argument("invalid json input\n");
+    if (!stringIsBalanced(src)) {
+        throw std::invalid_argument("source is unbalanced\n");
     }
+
+    std::stringstream objString(src);
+    Object* parsed = parse(objString);
+    if (!parsed) {
+        throw std::invalid_argument("invalid json string\n");
+    }
+
+    if (parent->getType() == PRIMITIVE) {
+        upliftPrimitive(parent, dest);
+    }
+    if (parent->getType() == COMPOSITE && !RegexUtil::isStringPrimitive(name)) {
+        throw std::invalid_argument("name is not a valid json string\n");
+    }
+    parent->addChild(name, parse(objString));
 }
 
 void JsonFile::changeElement(const std::string& dest, const std::string& src) {
-    if (dest.empty()) {
-        root->destroy();
-        delete root;
-        std::stringstream sourceStream(src);
-        root = parse(sourceStream);
+    if (!stringIsBalanced(src)) {
+        throw std::invalid_argument("unbalanced source\n");
     }
-
     if (!get(dest)) {
         throw std::invalid_argument("no such element\n");
     }
 
+    Object* toAdd;
+    std::stringstream sourceStream(src);
+    toAdd = parse(sourceStream);
+    
+    if (!toAdd) {
+        throw std::invalid_argument("invalid json input\n");
+    }
+
+    if (dest.empty()) {
+        root->destroy();
+        delete root;
+        std::stringstream sourceStream(src);
+        root = toAdd;
+        return;
+    }
+
     removeElement(dest, true);
     std::pair<std::string, std::string> beforeAndAfterDot = RegexUtil::splitAtLastDot(dest);
-    
-    Object* toAdd;
-    if (stringIsBalanced(src)) {
-        std::stringstream sourceStream(src);
-        toAdd = parse(sourceStream);
-    } else {
-        throw std::invalid_argument("invalid json input\n");
-    }
-
-    if (toAdd) {
-        get(beforeAndAfterDot.first)->addChild(beforeAndAfterDot.second, toAdd);
-    } else {
-        throw std::invalid_argument("invalid json input\n");
-    }
-
-
+    get(beforeAndAfterDot.first)->addChild(beforeAndAfterDot.second, toAdd);
 }
 
 void JsonFile::removeElement(const std::string& str, const bool& destroyMode) {
     std::pair<std::string, std::string> getPartAndRemovePart = RegexUtil::splitAtLastDot(str);
 
-    if (get(str)) {
+    if (str.empty()) {
+        root->destroy();
+        delete root;
+    }
+    else if (get(str)) {
         get(getPartAndRemovePart.first)->remove(getPartAndRemovePart.second, destroyMode);
     } else {
         throw new std::invalid_argument("no such element\n");
@@ -374,11 +383,15 @@ void JsonFile::removeElement(const std::string& str, const bool& destroyMode) {
 }
 
 void JsonFile::moveElement(const std::string& src, const std::string& dest) {
+    if (src.empty() || src == dest.substr(0, src.length())) {
+        throw std::invalid_argument("invalid source location. source cannot be same or a subelement of destination \n");
+    }
+
     Object* destination = get(dest);
     Object* source = get(src); 
 
     if (!destination || !source) {
-        throw std::invalid_argument("no such element \n");
+        throw std::invalid_argument("no such element\n");
     }
 
     if (destination->getType() == PRIMITIVE) {
@@ -421,13 +434,12 @@ void JsonFile::getAllByKey(const std::string& key, const std::string& destinatio
         print(array, out, false);
     }
 
-    objs.clear(); // so as not to trigger object destructors
     delete array;
 }
 
 void JsonFile::getNthByKey(const std::string& key, const int& index, const std::string& destination)const {
     std::vector<Object*> objs = findByKey(key);
-    if (0 < index && index < objs.size()) {
+    if (index < 0 || index < objs.size()) {
         if (destination.empty()) {
             print(objs[index], std::cout, false);
         } else {
@@ -437,6 +449,4 @@ void JsonFile::getNthByKey(const std::string& key, const int& index, const std::
     } else {
         throw new std::out_of_range("invalid index\n");
     }
-
-    objs.clear(); // so as not to trigger object destructors
 }
