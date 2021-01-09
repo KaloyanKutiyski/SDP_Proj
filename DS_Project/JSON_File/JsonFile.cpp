@@ -86,7 +86,6 @@ Object* JsonFile::parse(std::istream& in) {
     bool isEscaped = false;
      
     while(in.read(&curr, 1)) {
-        std::cout << bucket << '\n';
 
         if (!inQuotes && !bucket.empty() && (curr == '}' || curr == ']' || curr == ',')) {
             
@@ -231,7 +230,7 @@ void JsonFile::print(Object* rootObj, std::ostream& out, const bool& concise)con
 
         } else {
             if (currIndex != 0) {
-                out << ',' << concise ? "\n" : "";
+                out << ',' << (concise ? "\n" : "");
             }
             if (!concise) {
                 printNTabs(printStack.size(), out);
