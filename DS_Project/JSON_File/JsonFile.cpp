@@ -1,17 +1,60 @@
 #pragma once
 #include"JsonFile.hpp"
+#include"../Object/object.hpp"
 #include"../Object/Composite/composite.hpp"
 #include"../Object/ObjectArray/objectArray.hpp"
 #include"../Object/Primitive/primitive.hpp"
 #include"../Util/RegexUtil.hpp"
 #include<stack>
 #include<fstream>
-#include<assert.h>
+
+void JsonFile::addToBucket(std::string& bucket, const char& curr, bool& isEscaped, bool& inQuotes) {
+    bucket += curr;
+    if (curr == '\\' && !isEscaped) {
+        isEscaped = true;
+    } else {
+        if (curr == '\"' && !isEscaped) {
+            inQuotes = !inQuotes;
+        }
+        isEscaped = false;
+    }
+}
+
+void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& objectStack) {
+    Object* newObj = nullptr;
+    std::pair<std::string, std::string> bucketPair = RegexUtil::splitPair(bucket);
+            
+    if (objectStack.top()->getType() == COMPOSITE) {
+        if (RegexUtil::isKeyNewObject(bucket)) {
+            newObj = new Composite();
+        } else if (RegexUtil::isKeyNewArray(bucket)) {
+            newObj = new ObjectArray();
+        } else if (RegexUtil::isKeyNonNumericPrimitive(bucket)) {
+            newObj = new Primitive(bucketPair.second);
+        }
+            
+    } else if (objectStack.top()->getType() == ARRAY) {
+        if (bucket == "{") {
+            newObj = new Composite();
+        } else if (bucket == "[") {
+            newObj = new ObjectArray();
+        } else if (RegexUtil::isNonNumericPrimitive(bucket)) {
+            newObj = new Primitive(bucket);
+        }
+    }
+
+    if (newObj) {
+        objectStack.top()->addChild(bucketPair.first, newObj);
+        if (newObj->getType() != PRIMITIVE) {
+            objectStack.push(newObj);
+        }
+        bucket.clear();
+    }
+}
 
 Object* JsonFile::parse(std::istream& in) {
     
     std::string bucket;
-    std::stack<char> parenthesesStack;
     std::stack<Object*> objectStack;
     
     Object* res = nullptr;
@@ -21,99 +64,79 @@ Object* JsonFile::parse(std::istream& in) {
         res = new Composite();
     } else if (curr == '[') {
         res = new ObjectArray();
-    } else {
+    } else { 
+        /// this case handles creation of primitives.
+        /// early return as the rest of the logic only has meaning
+        /// if the object is not primitive
         std::string content;
         char c;
         while (in.read(&c, 1)) {
             content += c;
         }
         
-        if (RegexUtil::isNonNumericPrimitive(content)) {
-            res = new Primitive(content);
+        if (RegexUtil::isNonNumericPrimitive(content) || RegexUtil::isNumericPrimitive(content)) {
+            res = new Primitive(content); 
         }
         
         return res;
     }
 
     objectStack.push(res);
-    parenthesesStack.push(curr);
 
     bool inQuotes = false;
     bool isEscaped = false;
+     
     while(in.read(&curr, 1)) {
-        if (!inQuotes && !bucket.empty() && (curr == '}' || curr == ']')) {
+        std::cout << bucket << '\n';
 
-            if (curr == '}' && RegexUtil::isKeyNumericPrimitive(bucket)) {
-                std::pair<std::string, std::string> bucketAsPair = RegexUtil::splitPair(bucket);
-                objectStack.top()->addChild(bucketAsPair.first, new Primitive(bucketAsPair.second));
-            } else if (curr == ']' && RegexUtil::isNumericPrimitive(bucket)) {
-                objectStack.top()->addChild("", new Primitive(bucket));
-            } else {
-                res->destroy();
-                delete res;
-                return nullptr;
-            }
+        if (!inQuotes && !bucket.empty() && (curr == '}' || curr == ']' || curr == ',')) {
             
-            bucket = curr;
-
-        } else if (!inQuotes && !bucket.empty() && curr == ',') {
+            /// since often the prefix of a valid number is another valid number
+            /// we cannot simply stop reading after finding the shortest string
+            /// containing a valid number, instead we only stop reading
+            /// when met with a next object ( signified by ',' ) or end of object ( '}' or ']' ) 
             if (objectStack.top()->getType() == COMPOSITE && RegexUtil::isKeyNumericPrimitive(bucket)) {
                 std::pair<std::string, std::string> bucketAsPair = RegexUtil::splitPair(bucket);
                 objectStack.top()->addChild(bucketAsPair.first, new Primitive(bucketAsPair.second));
             } else if (objectStack.top()->getType() == ARRAY && RegexUtil::isNumericPrimitive(bucket)) {
                 objectStack.top()->addChild("", new Primitive(bucket));
             } else {
-                std::cout << bucket << '\n';
-                assert(false);
+                /// failstate:
+                /// we have reached a ',' meaning next object expected or ']' or '}' meaning end of object
+                /// yet the data before that could not be parsed
+                root->destroy();
+                delete root;
+                return nullptr;
             }
-
-            bucket.clear();
-
-        } else if (!inQuotes && (curr == ' ' || curr == '\n' || curr == '\r' || curr == '\v' || curr == '\f' || curr == '\t')
-            || bucket.empty() && curr == ',') {
+            
+            if (curr == '}' || curr ==']') {
+                bucket = curr;
+            } else {
+                bucket.clear();
+            }
+        
+        /// characters which do not carry any meaning and can be discarded
+        /// doing so simplifies the recognision of objects
+        /// as there is no need to check for and remove meaningless leading symbols
+        } else if (!inQuotes && (curr == ' ' 
+                                    || curr == '\n'
+                                    || curr == '\r'
+                                    || curr == '\v'
+                                    || curr == '\f'
+                                    || curr == '\t')
+                    || bucket.empty() && curr == ',') {
             continue;
         } else {
-            bucket += curr;
-            if (curr == '\\' && !isEscaped) {
-                isEscaped = true;
-            } else {
-                if (curr == '\"' && !isEscaped) {
-                    inQuotes = !inQuotes;
-                }
-                isEscaped = false;
-            }
+            /// used to reduce indentation levels
+            addToBucket(bucket, curr, isEscaped, inQuotes);
         }      
 
         if (bucket == "}" || bucket == "]") {
 
             objectStack.pop();
-            parenthesesStack.pop();
             bucket.clear();
-        
-        } else if (parenthesesStack.top() == '{' && RegexUtil::isKeyNewObject(bucket)
-                    || parenthesesStack.top() == '[' && bucket == "{") {
-            Object* newObj = new Composite();
-            objectStack.top()->addChild(RegexUtil::splitPair(bucket).first, newObj);
-            objectStack.push(newObj);
-            parenthesesStack.push('{');
-            bucket.clear();
-
-        } else if (parenthesesStack.top() == '{' && RegexUtil::isKeyNewArray(bucket)
-                    || parenthesesStack.top() == '[' && bucket == "[") {
-
-            Object* newObj = new ObjectArray();
-            objectStack.top()->addChild(RegexUtil::splitPair(bucket).first, newObj);
-            objectStack.push(newObj);
-            parenthesesStack.push('[');
-            bucket.clear();
-        
-        } else if (parenthesesStack.top() == '{' && RegexUtil::isKeyNonNumericPrimitive(bucket)
-                    || parenthesesStack.top() == '[' && RegexUtil::isNonNumericPrimitive(bucket)) {
-
-            std::pair<std::string, std::string> bucketPair = RegexUtil::splitPair(bucket);
-            Object* newObj = new Primitive(bucketPair.second);
-            objectStack.top()->addChild(RegexUtil::splitPair(bucket).first, newObj);
-            bucket.clear();
+        } else {
+            tryToCreateNewObject(bucket, objectStack);
         }
     }
     return res;
@@ -141,24 +164,27 @@ bool JsonFile::sourceIsBalanced(std::istream& in)const {
     bool isEscaped = false;
     char curr; 
     while(in.read(&curr, 1)) {        
+        if (curr == '\"' && !isEscaped) {
+            inQuotes = !inQuotes;
+        } else if (!inQuotes && (curr == '{' || curr == '[')) {
+            parentheses.push(curr);
+        } else if (!inQuotes && curr == '}') {
+            if (parentheses.empty() || parentheses.top() != '{') {
+                return false;
+            }
+            parentheses.pop();
+        } else if (!inQuotes && curr == ']') {
+            if (parentheses.empty() || parentheses.top() != '[') {
+                return false;
+            }
+            parentheses.pop();
+        }
+
+        /// a bit of hack but reduces indentation levels
+        /// is not an else if because setting isEscaped to false is needed in all other cases
         if (curr == '\\' && !isEscaped) {
             isEscaped = true;
         } else {
-            if (curr == '\"' && !isEscaped) {
-                inQuotes = !inQuotes;
-            } else if (!inQuotes && (curr == '{' || curr == '[')) {
-                parentheses.push(curr);
-            } else if (!inQuotes && curr == '}') {
-                if (parentheses.empty() || parentheses.top() != '{') {
-                    return false;
-                }
-                parentheses.pop();
-            } else if (!inQuotes && curr == ']') {
-                if (parentheses.empty() || parentheses.top() != '[') {
-                    return false;
-                }
-                parentheses.pop();
-            }
             isEscaped = false;
         }
     }

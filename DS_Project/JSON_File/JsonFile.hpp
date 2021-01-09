@@ -1,6 +1,7 @@
 #pragma once
 #include"../Object/object.hpp"
 #include<fstream>
+#include<stack>
 
 class JsonFile {
     Object* root;
@@ -15,7 +16,10 @@ class JsonFile {
     std::vector<Object*> findByKey(const std::string& key)const;
     void print(Object*, std::ostream&, const bool&)const;
     void upliftPrimitive(Object*, const std::string&);
-    
+    void addToBucket(std::string&, const char&, bool&, bool&);
+    void tryToCreateNewObject(std::string&, std::stack<Object*>&);
+
+
     public:
     JsonFile();
     ~JsonFile();

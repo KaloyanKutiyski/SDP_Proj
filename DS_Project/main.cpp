@@ -3,8 +3,12 @@
 #include"UI/UI.hpp"
 
 int main() {
-    UI ui;
-    ui.run();
+    JsonFile json;
+    json.load("json.json");
+    std::ofstream out("jason.json");
+    json.print("", out, true);
+    // UI ui;
+    // ui.run();
 
     return 0;
 }
