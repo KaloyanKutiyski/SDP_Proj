@@ -146,17 +146,40 @@ TEST_CASE("move element") {
         CHECK(result == "[{\"value\":\"New\",\"onclick\":\"CreateNewDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Close\",\"onclick\":\"CloseDoc()\"},\"file\"]");
     }
 
-    // a tad broken
     SUBCASE("to composite") {
         json.moveElement("\"menu\".\"popup\".\"menuitem\"", "\"menu\"", "\"table\"");
-        json.print("\"menu\".\"popup\".\"menuitem\"", result, true);
-        CHECK(result == "[]");
+        json.print("\"menu\".\"popup\"", result, true);
+        CHECK(result == "{}");
         result.clear();
         json.print("\"menu\".\"table\"", result, true);
         CHECK(result == "[{\"value\":\"New\",\"onclick\":\"CreateNewDoc()\"},{\"value\":\"Open\",\"onclick\":\"OpenDoc()\"},{\"value\":\"Close\",\"onclick\":\"CloseDoc()\"}]");
     }
     SUBCASE("to primitive") {
-        
+        json.moveElement("\"menu\".\"value\"", "\"menu\".\"id\"", "");
+        json.print("\"menu\".\"id\"", result, true);
+        CHECK(result == "[\"file\",\"File\"]");
+    }
+}
+
+TEST_CASE("sort test") {
+    JsonFile json;
+    json.load("sortTest.json");
+    std::string result;
+
+    SUBCASE("booleans test") {
+        json.sortArray("0");
+        json.print("0", result, true);
+        CHECK(result == "[false,true,true,null]");
+    }
+    SUBCASE("numbers test") {
+        json.sortArray("1");
+        json.print("1", result, true);
+        CHECK(result == "[-33.132,-1,0,2.3,4.2e3,null]");
+    }
+    SUBCASE("strings test") {
+        json.sortArray("2");
+        json.print("2", result, true);
+        CHECK(result == "[\"bottom text\",\"hello world\",null]");
     }
 }
 

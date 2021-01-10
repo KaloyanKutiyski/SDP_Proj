@@ -405,7 +405,7 @@ void JsonFile::moveElement(const std::string& src, const std::string& dest, cons
 
     if (destination->getType() == PRIMITIVE) {
         upliftPrimitive(destination, dest);
-    } else if (destination->getType() == COMPOSITE && (!RegexUtil::isStringPrimitive(name) || !destination->get(name))) {
+    } else if (destination->getType() == COMPOSITE && (!RegexUtil::isStringPrimitive(name) || destination->get(name))) {
         throw std::invalid_argument("invalid name or name present at destination\n");
     }
 

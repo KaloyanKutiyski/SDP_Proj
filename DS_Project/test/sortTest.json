@@ -1,0 +1,21 @@
+[
+    [
+        true,
+        false,
+        null,
+        true
+    ],
+    [
+        4.2e3,
+        0,
+        -1,
+        null,
+        2.3,
+        -33.132
+    ],
+    [
+        "hello world",
+        null,
+        "bottom text"
+    ]
+]

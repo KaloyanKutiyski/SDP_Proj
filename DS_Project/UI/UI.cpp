@@ -213,7 +213,7 @@ void UI::deleteElement(std::string& str) {
     }
 }
 
-// void UI::moveElement(std::string& str) {
+void UI::moveElement(std::string& str) {
 //     std::cout << "move to\n";
 //     std::string place;
 //     std::getline(std::cin, place);
@@ -223,7 +223,7 @@ void UI::deleteElement(std::string& str) {
 //     } catch (std::invalid_argument e) {
 //         std::cout << e.what();
 //     }
-// }
+}
 
 void UI::sort(std::string& str) {
     try {

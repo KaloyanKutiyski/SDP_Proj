@@ -1,6 +1,5 @@
 test.out: test.o JsonFile.o composite.o objectArray.o primitive.o object.o RegexUtil.o
 	g++ -std=c++17 test.o JsonFile.o composite.o objectArray.o primitive.o object.o RegexUtil.o -o test.out
-	rm *.o
 
 test.o: test.cpp
 	g++ -std=c++17 -c test.cpp

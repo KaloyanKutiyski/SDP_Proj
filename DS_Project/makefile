@@ -1,6 +1,5 @@
 main.out: main.o UI.o JsonFile.o composite.o objectArray.o primitive.o object.o RegexUtil.o
 	g++ -std=c++17 main.o UI.o JsonFile.o composite.o objectArray.o primitive.o object.o RegexUtil.o -o main.out
-	rm *.o
 
 main.o: main.cpp
 	g++ -std=c++17 -c main.cpp

@@ -58,8 +58,6 @@ bool Object::valueComparator(const Object* first, const Object* second) {
     std::string left = first->toString();
     std::string right = second->toString();
 
-    // broken as shit
-
     if (right == "null") {
         return true;
     } else if (left == "null") {
@@ -76,8 +74,8 @@ bool Object::valueComparator(const Object* first, const Object* second) {
         return strcmp(left.c_str(), right.c_str()) <= 0; 
     }
 
-    else if (isdigit(left.front() || left.front() == '-')) {
-        return RegexUtil::valueOfNumericString(left) < RegexUtil::valueOfNumericString(right);
+    else if (isdigit(left.front()) || left.front() == '-') {
+        return RegexUtil::valueOfNumericString(left) <= RegexUtil::valueOfNumericString(right);
     }
 
     return true;
