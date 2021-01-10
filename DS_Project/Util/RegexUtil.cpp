@@ -9,7 +9,7 @@ bool RegexUtil::isNonNumericPrimitive(const std::string& str) {
     return std::regex_match(str, regex);
 }
 bool RegexUtil::isKeyNonNumericPrimitive(const std::string& str) {
-    std::regex regex(JsonString + ":" + JsonNonNumericPrimitive);
+    std::regex regex(JsonString + ":(" + JsonNonNumericPrimitive + ")");
     return std::regex_match(str, regex);
 }
 
@@ -114,4 +114,17 @@ double RegexUtil::valueOfNumericString(const std::string& str) {
 bool RegexUtil::isStringPrimitive(const std::string& str) {
     std::regex stringRegex(JsonString);
     return std::regex_match(str, stringRegex);
+}
+
+bool RegexUtil::isValidCreationKey(const std::string& str) {
+    std::regex regex(JsonString + "(\\." + JsonString + ")*");
+    return std::regex_match(str, regex);
+}
+
+std::pair<std::string, std::string> RegexUtil::splitAtFirstDot(const std::string& string) {
+    int index = findFirstInstanceOfOutsideQuotes('.', string);
+    if (index == -1) {
+        return std::make_pair(string, "");
+    }
+    return std::make_pair(string.substr(0, index), string.substr(index + 1));
 }

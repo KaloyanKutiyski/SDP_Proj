@@ -27,11 +27,12 @@ class JsonFile {
     
     void attachObjectFromString(const std::string&, const std::string&, const std::string&);
     void removeElement(const std::string&, const bool&);
-    void moveElement(const std::string&, const std::string&);
+    void moveElement(const std::string&, const std::string&, const std::string&);
     void sortArray(const std::string&);
     void getAllByKey(const std::string&, const std::string&)const;
     void getNthByKey(const std::string&, const int&, const std::string&)const;
     void changeElement(const std::string&, const std::string&);
+    void createFromIndex(std::string&);
 
     void print(const std::string&, std::ostream&, const bool&)const;
     void print(const std::string&, const bool&)const;

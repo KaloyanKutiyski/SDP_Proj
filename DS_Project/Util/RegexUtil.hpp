@@ -20,10 +20,13 @@ namespace RegexUtil {
     bool isKeyNewObject(const std::string&);
     bool isKeyNewArray(const std::string&);
 
+    bool isValidCreationKey(const std::string&);
+
     bool isOutsideQuotes(const size_t&, const std::string&);
     int findFirstInstanceOfOutsideQuotes(const char&, const std::string&);
     std::pair<std::string, std::string> splitPair(const std::string&);
     std::pair<std::string, std::string> splitAtLastDot(const std::string&);
+    std::pair<std::string, std::string> splitAtFirstDot(const std::string&);
     double valueOfNumericString(const std::string&);
 };
  
