@@ -7,14 +7,11 @@ namespace RegexUtil {
     const std::string JsonString = "\"([^(\\\\)(\\\")[:cntrl:]]|[\\(\\)]|(\\\\)([(\\\\)(\\\")/bfnrt]|u[[:xdigit:]]{4}))*\"";
     const std::string JsonNumber = "-?(0|[1-9](\\d)*)(\\.\\d+)?([Ee][\\+-]?\\d+)?";
     const std::string JsonSpecial = "true|false|null";
-    const std::string JsonNonNumericPrimitive = "(" + JsonString + ")|(" + JsonSpecial + ")";
+    const std::string JsonPrimitive = "(" + JsonString + ")|(" + JsonSpecial + ")|(" + JsonNumber + ")";
 
-    bool isNonNumericPrimitive(const std::string&);
-    bool isKeyNonNumericPrimitive(const std::string&);
-
-    bool isNumericPrimitive(const std::string&);
-    bool isKeyNumericPrimitive(const std::string&);
-    
+    bool isPrimitive(const std::string&);
+    bool isKeyPrimitive(const std::string&);
+   
     bool isStringPrimitive(const std::string&);
 
     bool isKeyNewObject(const std::string&);

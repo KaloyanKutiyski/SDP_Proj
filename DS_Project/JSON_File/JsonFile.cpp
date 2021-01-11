@@ -20,7 +20,7 @@ void JsonFile::addToBucket(std::string& bucket, const char& curr, bool& isEscape
     }
 }
 
-void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& objectStack) {
+bool JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& objectStack) {
     Object* newObj = nullptr;
     std::pair<std::string, std::string> bucketPair = RegexUtil::splitPair(bucket);
     
@@ -30,7 +30,7 @@ void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& ob
             newObj = new Composite();
         } else if (RegexUtil::isKeyNewArray(bucket)) {
             newObj = new ObjectArray();
-        } else if (RegexUtil::isKeyNonNumericPrimitive(bucket)) {
+        } else if (RegexUtil::isKeyPrimitive(bucket)) {
             newObj = new Primitive(bucketPair.second);
         }
     //!Arrays require just a valid primitive or an opening bracket
@@ -39,7 +39,7 @@ void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& ob
             newObj = new Composite();
         } else if (bucket == "[") {
             newObj = new ObjectArray();
-        } else if (RegexUtil::isNonNumericPrimitive(bucket)) {
+        } else if (RegexUtil::isPrimitive(bucket)) {
             newObj = new Primitive(bucket);
         }
     }
@@ -53,6 +53,8 @@ void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& ob
         //!data from bucket successfully read. prepares for next data.
         bucket.clear();
     }
+
+    return (bool) newObj;
 }
 
 Object* JsonFile::parse(std::istream& in) {
@@ -75,7 +77,7 @@ Object* JsonFile::parse(std::istream& in) {
             content += curr;
         }
         
-        if (RegexUtil::isNonNumericPrimitive(content) || RegexUtil::isNumericPrimitive(content)) {
+        if (RegexUtil::isPrimitive(content)) {
             res = new Primitive(content); 
         }
         
@@ -88,18 +90,18 @@ Object* JsonFile::parse(std::istream& in) {
     bool isEscaped = false;
      
     while(in.read(&curr, 1)) {
-        if (!inQuotes && !bucket.empty() && (curr == '}' || curr == ']' || curr == ',')) {
+        //!these symbols signify that there should be enough information to create a new element
+        if (!inQuotes &&
+            (curr == '{' || curr == '[' || curr == '}' || curr == ']' || curr == ',')) {
             
-            //! since often the prefix of a valid number is another valid number
-            //! we cannot simply stop reading after finding the shortest string
-            //! containing a valid number, instead we only stop reading
-            //! when met with a next object ( signified by ',' ) or end of object ( '}' or ']' ) 
-            if (objectStack.top()->getType() == COMPOSITE && RegexUtil::isKeyNumericPrimitive(bucket)) {
-                std::pair<std::string, std::string> bucketAsPair = RegexUtil::splitPair(bucket);
-                objectStack.top()->addChild(bucketAsPair.first, new Primitive(bucketAsPair.second));
-            } else if (objectStack.top()->getType() == ARRAY && RegexUtil::isNumericPrimitive(bucket)) {
-                objectStack.top()->addChild("", new Primitive(bucket));
-            } else {
+            //!opening brackets do carry information about the creation of new objects
+            //!therefore they are added to the bucket
+            //!commas and closing brackets do not however
+            if (curr == '{' || curr == '[') {
+                bucket += curr;
+            }
+            //!if after parsing the bucket it receives a closing bracket it should not attempt to create an element
+            if(!bucket.empty() && !tryToCreateNewObject(bucket, objectStack)) {
                 //! failstate:
                 //! we have reached a ',' meaning next object expected or ']' or '}' meaning end of object
                 //! yet the data before that could not be parsed
@@ -108,36 +110,17 @@ Object* JsonFile::parse(std::istream& in) {
                 return nullptr;
             }
             
-            //!closing brackets must be preserved so as to close the object
-            if (curr == '}' || curr ==']') {
-                bucket = curr;
-            } else {
-                bucket.clear();
+            if (curr == '}' || curr == ']') {
+                objectStack.pop();
             }
         
-        //! characters which do not carry any meaning and can be discarded
-        //! doing so simplifies the recognision of objects
-        //! as there is no need to check for and remove meaningless leading symbols
-        } else if (!inQuotes && (curr == ' ' 
-                                    || curr == '\n'
-                                    || curr == '\r'
-                                    || curr == '\v'
-                                    || curr == '\f'
-                                    || curr == '\t')
-                    || bucket.empty() && curr == ',') {
+        //!whitespaces which do not carry any meaning and can be discarded
+        } else if (!inQuotes && isspace(curr)) {
             continue;
         } else {
-            //! used to reduce indentation levels
+            //!used to reduce indentation levels
             addToBucket(bucket, curr, isEscaped, inQuotes);
         }      
-
-        //! the current composite/array has ended, returns to its parent
-        if (bucket == "}" || bucket == "]") {
-            objectStack.pop();
-            bucket.clear();
-        } else {
-            tryToCreateNewObject(bucket, objectStack);
-        }
     }
     return res;
 }

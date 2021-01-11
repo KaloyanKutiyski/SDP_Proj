@@ -24,7 +24,7 @@ class JsonFile {
     void addToBucket(std::string&, const char&, bool&, bool&);
 
     //!creates a new object from the bucket in the method parse when there is enough data
-    void tryToCreateNewObject(std::string&, std::stack<Object*>&);
+    bool tryToCreateNewObject(std::string&, std::stack<Object*>&);
 
     //!generates a vector of those elements written under the given key
     std::vector<Object*> findByKey(const std::string& key)const;

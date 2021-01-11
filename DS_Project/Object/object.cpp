@@ -33,8 +33,8 @@ bool Object::allAreBooleans(Object* object) {
 bool Object::allAreNumbers(Object* object) {
     int index = 0;
     while (object->getNth(index).second != nullptr) {
-        if (!(RegexUtil::isNumericPrimitive(object->getNth(index).second->toString())
-            || object->getNth(index).second->toString() == "null")) {
+        char first = object->getNth(index).second->toString().front();
+        if (!(first == '-') && !isdigit(first) && !(object->getNth(index).second->toString() == "null")) {
             return false;
         }
         index++;

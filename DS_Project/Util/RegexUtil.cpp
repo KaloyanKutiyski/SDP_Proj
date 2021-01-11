@@ -4,24 +4,14 @@
 #include<cmath>
 #include<iostream>
 
-bool RegexUtil::isNonNumericPrimitive(const std::string& str) {
-    std::regex regex(JsonNonNumericPrimitive);
+bool RegexUtil::isPrimitive(const std::string& str) {
+    std::regex regex(JsonPrimitive);
     return std::regex_match(str, regex);
 }
-bool RegexUtil::isKeyNonNumericPrimitive(const std::string& str) {
-    std::regex regex(JsonString + ":(" + JsonNonNumericPrimitive + ")");
+bool RegexUtil::isKeyPrimitive(const std::string& str) {
+    std::regex regex(JsonString + ":(" + JsonPrimitive + ")");
     return std::regex_match(str, regex);
 }
-
-bool RegexUtil::isNumericPrimitive(const std::string& str) {
-    std::regex regex(JsonNumber);
-    return std::regex_match(str, regex);
-}
-bool RegexUtil::isKeyNumericPrimitive(const std::string& str) {
-    std::regex regex(JsonString + ":" + JsonNumber);
-    return std::regex_match(str, regex);
-}
-
 
 bool RegexUtil::isKeyNewObject(const std::string& str) {
     std::regex regex(JsonString + ":\\{");
