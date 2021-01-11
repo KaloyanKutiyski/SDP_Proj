@@ -17,13 +17,15 @@ class UI {
     bool isAllNum(const std::string&)const;
 
     void save(std::string&)const;
+    void savePart(std::string&)const;
     void print(std::string&)const;
-    void keySearch(std::string&)const;
-    void attachElement(std::string&);
-    void changeElement(std::string&);
-    void deleteElement(std::string&);
-    void moveElement(std::string&);
+    void find(std::string&)const;
+    void create(std::string&);
+    void change(std::string&);
+    void remove(std::string&);
+    void move(std::string&);
     void sort(std::string&);
+    void generate(std::string&);
 
     public:
     UI();

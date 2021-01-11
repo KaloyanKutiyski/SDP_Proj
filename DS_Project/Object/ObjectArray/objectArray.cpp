@@ -75,3 +75,7 @@ void ObjectArray::findByKeyHelper(const std::string& key, std::vector<Object*>& 
         subObject->findByKeyHelper(key, results);
     }
 }
+
+int ObjectArray::getSize()const {
+    return subObjects.size();
+}

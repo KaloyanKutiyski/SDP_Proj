@@ -13,11 +13,10 @@ int main() {
     // ui.run();
 
     JsonFile jsonTest;
-    jsonTest.load("test/sortTest.json");
-    jsonTest.print("", true);
-    jsonTest.sortArray("2");
-    jsonTest.print("2", true);
-    // jsonTest.print("", false);
+    jsonTest.load("test/jsonExample1.json");
+    jsonTest.createFromIndex("\"menu\".\"id\".\"some\".\"thing\"");
+    std::ofstream out("what.json");
+    jsonTest.print("", out, false);
 
     // std::cout << RegexUtil::valueOfNumericString("4.2e3") << '\n';
     // std::cout << RegexUtil::valueOfNumericString("0") << '\n';

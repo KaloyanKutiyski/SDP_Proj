@@ -149,6 +149,10 @@ void JsonFile::load(const std::string& filePath) {
     }
     Object* temp = parse(in);
     if (temp) {
+        if (root) {
+            root->destroy();
+            delete root;
+        }
         root = temp;
     } else {
         throw std::invalid_argument("file does not match json file\n");
@@ -254,7 +258,6 @@ void JsonFile::print(Object* rootObj, std::ostream& out, const bool& concise)con
             }
         }
     }
-    std::cout << '\n';
 }
 
 void JsonFile::printNTabs(const size_t& n, std::ostream& out)const {
@@ -275,6 +278,7 @@ void JsonFile::print(const std::string& object, std::ostream& out, const bool& c
 
 void JsonFile::print(const std::string& object, const bool& concise)const {
     print(object, std::cout, concise);
+    std::cout << '\n';
 }
 
 void JsonFile::print(const std::string& object, std::string& output, const bool& conscise)const {
@@ -462,7 +466,7 @@ void JsonFile::getNthByKey(const std::string& key, const int& index, const std::
     }
 }
 
-void JsonFile::createFromIndex(std::string& creationKey) {
+void JsonFile::createFromIndex(const std::string& creationKey) {
     if (!RegexUtil::isValidCreationKey(creationKey)) {
         throw std::invalid_argument("invalid creaton key\n");
     }
@@ -470,32 +474,33 @@ void JsonFile::createFromIndex(std::string& creationKey) {
     if (!root) {
         root = new Composite();
     }
-    Object* curr = root;
+    createFromIndex(root, creationKey, "");
+}
 
-    std::string soFar;
-    while (!creationKey.empty()) {
-        std::pair<std::string, std::string> creationKeyPair = RegexUtil::splitAtFirstDot(creationKey);
+void JsonFile::createFromIndex(Object* obj, const std::string& creationKey, const std::string& soFar) {
+    std::pair<std::string, std::string> creationKeyPair = RegexUtil::splitAtFirstDot(creationKey);
+    std::string soFarNext;
+    if (!soFar.empty()) {
+        soFarNext = soFar + '.';
+    }
 
-        if (curr->getType() == COMPOSITE) {
-            if (curr->get(creationKeyPair.first)) {
-                curr = curr->get(creationKeyPair.first);
-            } else {
-                Object* newObj = new Composite();
-                curr->addChild(creationKeyPair.first, newObj);
-                curr = newObj;
-            }
-        } else if (curr->getType() == ARRAY) {
-            Object* newObj = new Composite();
-            curr->addChild("", newObj);
-            curr = newObj;
-        }
-
-        if (curr->getType() == PRIMITIVE) {
-            upliftPrimitive(curr, soFar);
-            curr = get(soFar);
-            continue;
+    if (creationKey.empty()) {
+        return;
+    } else if (obj->getType() == COMPOSITE && obj->get(creationKeyPair.first)) {
+        createFromIndex(obj->get(creationKeyPair.first), creationKeyPair.second, soFarNext + creationKeyPair.first);
+    } else {
+        Object* newObj = new Composite();
+        if (obj->getType() == COMPOSITE) {
+            obj->addChild(creationKeyPair.first, newObj);
+            createFromIndex(newObj, creationKeyPair.second, soFarNext + creationKeyPair.first);
+        } else if (obj->getType() == ARRAY) {
+            obj->addChild("", newObj);
+            createFromIndex(newObj, creationKeyPair.second, soFarNext + std::to_string(obj->getSize() - 1));
         } else {
-            creationKey = creationKeyPair.second;
+            upliftPrimitive(obj, soFar);
+            obj->addChild("", newObj);
+            createFromIndex(newObj, creationKeyPair.second, soFarNext + "1");
         }
+
     }
 }

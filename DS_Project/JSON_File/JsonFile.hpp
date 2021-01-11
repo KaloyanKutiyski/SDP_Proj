@@ -18,6 +18,7 @@ class JsonFile {
     void upliftPrimitive(Object*, const std::string&);
     void addToBucket(std::string&, const char&, bool&, bool&);
     void tryToCreateNewObject(std::string&, std::stack<Object*>&);
+    void createFromIndex(Object*, const std::string&, const std::string&);
 
 
     public:
@@ -32,7 +33,7 @@ class JsonFile {
     void getAllByKey(const std::string&, const std::string&)const;
     void getNthByKey(const std::string&, const int&, const std::string&)const;
     void changeElement(const std::string&, const std::string&);
-    void createFromIndex(std::string&);
+    void createFromIndex(const std::string&);
 
     void print(const std::string&, std::ostream&, const bool&)const;
     void print(const std::string&, const bool&)const;

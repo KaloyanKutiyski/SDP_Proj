@@ -90,30 +90,31 @@ void UI::parseCommand(std::string& string) {
 
     if (command == "save") {
         save(string);
+    } else if (command == "savePart") {
+        savePart(string);
     } else if (command == "print") {
         print(string);
-    } else if (command == "search") {
-        keySearch(string);
-    } else if (command == "attach") {
-        attachElement(string);
+    } else if (command == "find") {
+        find(string);
+    } else if (command == "create") {
+        create(string);
     } else if (command == "change") {
-        changeElement(string);
+        change(string);
     } else if (command == "remove") {
-        deleteElement(string);
+        remove(string);
     } else if (command == "move") {
-        moveElement(string);
+        move(string);
     } else if (command == "sort") {
         sort(string);
-    } else {
+    } else if (command == "generate") {
+        generate(string);
+    }
+    else {
         std::cout << errorMessage;
     }
 }
 
 void UI::save(std::string& string)const {
-    std::cout << "choose path to a subobject. leave empty to save the entire file\n";
-    std::string part;
-    std::getline(std::cin, part);
-
     std::string modeWord = lower(splitOff(string, true));
     bool mode;
     if (modeWord == "normal") {
@@ -133,7 +134,35 @@ void UI::save(std::string& string)const {
     }
     if (out) {
         try {
-            file.print(part, out, mode);
+            file.print("", out, mode);
+        } catch (std::invalid_argument e) {
+            std::cout << e.what();
+        }
+    } else {
+        std::cout << "bad filename\n";
+    }
+}
+
+void UI::savePart(std::string& string)const {
+    std::string modeWord = lower(splitOff(string, true));
+    bool mode;
+    if (modeWord == "normal") {
+        mode = false;
+    } else if (modeWord == "concise") {
+        mode = true;
+    } else {
+        std::cout << "mode of saving could not be determined\n";
+        return;
+    }
+
+    std::cout << "choose filename\n";
+    std::string filename;
+    std::getline(std::cin, filename);
+
+    std::ofstream out(filename);
+    if (out) {
+        try {
+            file.print(string, out, mode);
         } catch (std::invalid_argument e) {
             std::cout << e.what();
         }
@@ -161,7 +190,7 @@ void UI::print(std::string& string)const {
     }
 }
 
-void UI::keySearch(std::string& string)const {
+void UI::find(std::string& string)const {
     std::cout << "choose file destination, leave empty to print to console\n";
     std::string destination;
     std::getline(std::cin, destination);
@@ -178,12 +207,12 @@ void UI::keySearch(std::string& string)const {
     }
 }
 
-void UI::attachElement(std::string& str) {
-    std::cout << "choose name for the user created object. Can be left empty if adding to array";
+void UI::create(std::string& str) {
+    std::cout << "choose name for the user created object. Can be left empty if adding to array or primitive\n";
     std::string name;
     std::getline(std::cin, name);
 
-    std::cout << "write json input to console:\n";
+    std::cout << "write json to console:\n";
     std::string jsonFromConsole;
     std::getline(std::cin, jsonFromConsole);
 
@@ -194,7 +223,7 @@ void UI::attachElement(std::string& str) {
     }
 }
 
-void UI::changeElement(std::string& str) {
+void UI::change(std::string& str) {
     std::cout << "write json input to console:\n";
     std::string jsonFromConsole;
     std::getline(std::cin, jsonFromConsole);
@@ -205,7 +234,7 @@ void UI::changeElement(std::string& str) {
     }
 }
 
-void UI::deleteElement(std::string& str) {
+void UI::remove(std::string& str) {
     try {
         file.removeElement(str, true);
     } catch (std::invalid_argument e) {
@@ -213,21 +242,33 @@ void UI::deleteElement(std::string& str) {
     }
 }
 
-void UI::moveElement(std::string& str) {
-//     std::cout << "move to\n";
-//     std::string place;
-//     std::getline(std::cin, place);
+void UI::move(std::string& str) {
+    std::cout << "choose name for the moved element\n";
+    std::string name;
+    std::getline(std::cin, name);
 
-//     try {
-//         file.moveElement(str, place);
-//     } catch (std::invalid_argument e) {
-//         std::cout << e.what();
-//     }
+    std::cout << "move to\n";
+    std::string place;
+    std::getline(std::cin, place);
+
+    try {
+        file.moveElement(str, place, name);
+    } catch (std::invalid_argument e) {
+        std::cout << e.what();
+    }
 }
 
 void UI::sort(std::string& str) {
     try {
         file.sortArray(str);
+    } catch (std::invalid_argument e) {
+        std::cout << e.what();
+    }
+}
+
+void UI::generate(std::string& str) {
+    try {
+        file.createFromIndex(str);
     } catch (std::invalid_argument e) {
         std::cout << e.what();
     }

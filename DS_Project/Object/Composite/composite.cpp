@@ -80,3 +80,7 @@ void Composite::findByKeyHelper(const std::string& key, std::vector<Object*>& re
         subObjects.at(subObjectKey)->findByKeyHelper(key, results);
     }
 }
+
+int Composite::getSize()const {
+    return subObjects.size();
+}

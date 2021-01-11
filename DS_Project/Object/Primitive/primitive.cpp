@@ -44,3 +44,7 @@ void Primitive::sort(){
 
 void Primitive::findByKeyHelper(const std::string& key, std::vector<Object*>& results)const {
 }
+
+int Primitive::getSize()const {
+    return 0;
+}

@@ -19,6 +19,7 @@ class Object {
     virtual void remove(const std::string&, const bool&) = 0;
     virtual void sort() = 0;
     virtual void findByKeyHelper(const std::string&, std::vector<Object*>&)const = 0;
+    virtual int getSize()const = 0;
 
     static bool allArePrimitive(Object*);
     static bool allAreBooleans(Object*);

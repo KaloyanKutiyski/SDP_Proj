@@ -17,4 +17,6 @@ class ObjectArray: public Object {
     void remove(const std::string&, const bool&);
     void sort();
     void findByKeyHelper(const std::string&, std::vector<Object*>&)const;
+    int getSize()const;
+
 };

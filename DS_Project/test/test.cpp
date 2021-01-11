@@ -183,6 +183,21 @@ TEST_CASE("sort test") {
     }
 }
 
+TEST_CASE("create from key test") {
+    JsonFile json;
+    json.load("jsonExample1.json");
+    std::string result;
+
+    json.createFromIndex("\"menu\".\"popup\".\"menuitem\".\"newObj\"");
+    json.print("\"menu\".\"popup\".\"menuitem\".3", result, true);
+    CHECK(result == "{}");
+
+    result.clear();
+    json.createFromIndex("\"menu\".\"id\".\"newObj\"");
+    json.print("\"menu\".\"id\".1", result, true);
+    CHECK(result == "{}");
+}
+
 int main() {
     doctest::Context().run();
     return 0;
