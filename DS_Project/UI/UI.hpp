@@ -4,16 +4,21 @@
 class UI {
     bool hasFile;
     JsonFile file;
+
+    static const std::string beginMessage;
+    static const std::string endMessage;
+    static const std::string helpMessage;
+
+    ///used for saving changes to the same file
     std::string filePath;
-    std::string beginMessage;
-    std::string endMessage;
-    std::string helpMessage;
-    std::string errorMessage;
 
-
+    ///removes leading and trailing whitespaces
     void trim(std::string&)const;
     std::string lower(const std::string&)const;
+    
+    /// used to separate a word from the beginning of a string without using stringstreams
     std::string splitOff(std::string&, const bool&)const;
+    
     bool isAllNum(const std::string&)const;
 
     void save(std::string&)const;

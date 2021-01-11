@@ -23,7 +23,8 @@ void JsonFile::addToBucket(std::string& bucket, const char& curr, bool& isEscape
 void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& objectStack) {
     Object* newObj = nullptr;
     std::pair<std::string, std::string> bucketPair = RegexUtil::splitPair(bucket);
-            
+    
+    ///Composites require a valid key:value pair
     if (objectStack.top()->getType() == COMPOSITE) {
         if (RegexUtil::isKeyNewObject(bucket)) {
             newObj = new Composite();
@@ -32,7 +33,7 @@ void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& ob
         } else if (RegexUtil::isKeyNonNumericPrimitive(bucket)) {
             newObj = new Primitive(bucketPair.second);
         }
-            
+    ///Arrays require just a valid primitive or an opening bracket
     } else if (objectStack.top()->getType() == ARRAY) {
         if (bucket == "{") {
             newObj = new Composite();
@@ -46,8 +47,10 @@ void JsonFile::tryToCreateNewObject(std::string& bucket, std::stack<Object*>& ob
     if (newObj) {
         objectStack.top()->addChild(bucketPair.first, newObj);
         if (newObj->getType() != PRIMITIVE) {
+            ///the last added array or composite must be on top of the stack in order to receive subObjects
             objectStack.push(newObj);
         }
+        ///data from bucket successfully read. prepares for next data.
         bucket.clear();
     }
 }
@@ -65,8 +68,7 @@ Object* JsonFile::parse(std::istream& in) {
         res = new ObjectArray();
     } else { 
         /// this case handles creation of primitives.
-        /// early return as the rest of the logic only has meaning
-        /// if the object is not primitive
+        /// early return as the rest of the logic only has meaning if the root object is not primitive
         std::string content;
         content += curr;
         while (in.read(&curr, 1)) {
@@ -106,6 +108,7 @@ Object* JsonFile::parse(std::istream& in) {
                 return nullptr;
             }
             
+            ///closing brackets must be preserved so as to close the object
             if (curr == '}' || curr ==']') {
                 bucket = curr;
             } else {
@@ -128,8 +131,8 @@ Object* JsonFile::parse(std::istream& in) {
             addToBucket(bucket, curr, isEscaped, inQuotes);
         }      
 
+        /// the current composite/array has ended, returns to its parent
         if (bucket == "}" || bucket == "]") {
-
             objectStack.pop();
             bucket.clear();
         } else {
@@ -141,6 +144,7 @@ Object* JsonFile::parse(std::istream& in) {
 
 void JsonFile::load(const std::string& filePath) {
     std::ifstream in(filePath);
+    ///guarantees the existance and balance of file. the latter significantly simplifies parsing
     if (!in || !in.good()) {
         throw std::invalid_argument("bad file\n");
     }
@@ -149,6 +153,7 @@ void JsonFile::load(const std::string& filePath) {
     }
     Object* temp = parse(in);
     if (temp) {
+        ///overrides the previously loaded file
         if (root) {
             root->destroy();
             delete root;
@@ -206,20 +211,21 @@ bool JsonFile::fileIsBalanced(const std::string& string)const {
 }
 
 void JsonFile::print(Object* rootObj, std::ostream& out, const bool& concise)const {
+    ///simple cases that need not a stack to be handled
     if (!rootObj) {
         return;
     }
-
     if (rootObj->getType() == PRIMITIVE) {
         out << rootObj->toString();
         return;
     }
 
+    ///stack that contains the name, value and order in parent of an object
     std::stack<std::pair<std::pair<std::string, Object*>, int>> printStack;
     printStack.push(std::make_pair(std::make_pair("", rootObj), 0));
     
     out << rootObj->opener();
-    if (!concise && rootObj->getType() != PRIMITIVE) {
+    if (!concise) {
         out << '\n';
     }
     while (!printStack.empty()) {
@@ -227,7 +233,8 @@ void JsonFile::print(Object* rootObj, std::ostream& out, const bool& concise)con
         int currIndex = printStack.top().second;
         std::pair<std::string, Object*> next = currObj->getNth(currIndex);
 
-
+        ///this is the case when all the subobjects of an array/composite have been printed
+        ///the closing parenthesis is printed and the current object is replaced with the parent's next subobject
         if (next.first == "" && next.second == nullptr) {
             if (!concise) {
                 out << '\n';
@@ -250,10 +257,12 @@ void JsonFile::print(Object* rootObj, std::ostream& out, const bool& concise)con
 
             if (next.second->getType() == PRIMITIVE) {
                 out << next.first << (!next.first.empty() && !concise ? " " : "") << next.second->toString();
+                ///primitives need not be added to the stack. the next subObject gets printed
                 printStack.top().second++;
 
             } else {
                 out << next.first << (!next.first.empty() && !concise ? " " : "") << next.second->opener();
+                ///if a composite/array is found, the printing of the current object is halted until the subobject's is printed
                 printStack.push(std::make_pair(next, 0));
             }
         }
@@ -304,6 +313,7 @@ Object* JsonFile::get(const std::string& query)const {
     return get(root, query);
 }
 
+///recursively goes down the tree of elements until the query becomes empty or contains one key/index
 Object* JsonFile::get(Object* obj, const std::string& query)const {
     std::pair<std::string, std::string> queryPair = RegexUtil::splitAtFirstDot(query);
     if (query.empty()) {
@@ -318,12 +328,23 @@ Object* JsonFile::get(Object* obj, const std::string& query)const {
 }
 
 void JsonFile::upliftPrimitive(Object* destination, const std::string& dest) {
+    if (destination == root) {
+        std::string oldRoot = root->toString();
+        delete root;
+        root = new ObjectArray();
+        root->addChild("", new Primitive(oldRoot));
+    }
+
+    ///the primitive is removed from its parent but its old data is preserved
     std::string oldVal = destination->toString();
     std::pair<std::string, std::string> destinationAndParent = RegexUtil::splitAtLastDot(dest);
     removeElement(dest, true);
+
     Object* parent = get(destinationAndParent.first);
     destination = new ObjectArray();
+    ///an empty array is added to the parent
     parent->addChild(destinationAndParent.second, destination);
+    ///the old value is returned to the array
     destination->addChild("", new Primitive(oldVal));
 }
 
@@ -370,11 +391,11 @@ void JsonFile::changeElement(const std::string& dest, const std::string& src) {
     if (dest.empty()) {
         root->destroy();
         delete root;
-        std::stringstream sourceStream(src);
         root = toAdd;
         return;
     }
 
+    ///the old element is removed and the new one added
     removeElement(dest, true);
     std::pair<std::string, std::string> beforeAndAfterDot = RegexUtil::splitAtLastDot(dest);
     get(beforeAndAfterDot.first)->addChild(beforeAndAfterDot.second, toAdd);
@@ -413,12 +434,14 @@ void JsonFile::moveElement(const std::string& src, const std::string& dest, cons
         throw std::invalid_argument("invalid name or name present at destination\n");
     }
 
+    ///does not delete the dynamic memory
     removeElement(src, false);
     destination->addChild(name, source);
 }
 
 void JsonFile::sortArray(const std::string& str) {
     Object* obj = get(str);
+    ///if the object is unsortable it simply does nothing
     if (obj) {
         obj->sort();
     } else {
@@ -437,15 +460,18 @@ std::vector<Object*> JsonFile::findByKey(const std::string& key)const {
 
 void JsonFile::getAllByKey(const std::string& key, const std::string& destination)const {
     std::vector<Object*> objs = findByKey(key);
+
+    ///creates a temporary json array to facilitate printing
     Object* array = new ObjectArray();
     for (Object* obj : objs) {
         array->addChild("", obj);
     }
 
+    ///defaults to printing in console if there is no filename given
+    std::ofstream out(destination);
     if (destination.empty()) {
         print(array, std::cout, true);
     } else {
-        std::ofstream out(destination);
         print(array, out, true);
     }
 
@@ -455,6 +481,7 @@ void JsonFile::getAllByKey(const std::string& key, const std::string& destinatio
 void JsonFile::getNthByKey(const std::string& key, const int& index, const std::string& destination)const {
     std::vector<Object*> objs = findByKey(key);
     if (index >= 0 && index < objs.size()) {
+        ///defaults to printing in console
         if (destination.empty()) {
             print(objs[index], std::cout, true);
         } else {
@@ -474,6 +501,7 @@ void JsonFile::createFromIndex(const std::string& creationKey) {
     if (!root) {
         root = new Composite();
     }
+    ///does not need further validation, it is called with a validated creationKey
     createFromIndex(root, creationKey, "");
 }
 

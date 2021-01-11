@@ -128,3 +128,8 @@ std::pair<std::string, std::string> RegexUtil::splitAtFirstDot(const std::string
     }
     return std::make_pair(string.substr(0, index), string.substr(index + 1));
 }
+
+bool RegexUtil::isPositiveInteger(const std::string& str) {
+    std::regex reg("0|([1-9]\\d*)");
+    return std::regex_match(str, reg);
+}

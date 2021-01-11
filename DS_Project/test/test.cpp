@@ -80,6 +80,13 @@ TEST_CASE("change object test") {
         json.print("", result, true);
         CHECK(result == "{\"LOOK AT ME\":\"I AM THE JSON NOW\"}");
     }
+
+    SUBCASE("change array") {
+        json.changeElement("\"menu\".\"popup\".\"menuitem\".0", "null");
+        json.print("\"menu\".\"popup\".\"menuitem\".0", result, true);
+        CHECK(result == "null");
+
+    }
 }
 
 TEST_CASE("Create object test") {

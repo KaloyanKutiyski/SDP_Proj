@@ -1,14 +1,24 @@
 #pragma once
 #include"objectArray.hpp"
-#include<regex>
 #include<algorithm>
+#include"../../Util/RegexUtil.hpp"
 
 std::string ObjectArray::toString()const {
     return "";
 }
 
+///can insert at specified index
 void ObjectArray::addChild (const std::string& str, Object* obj) {
-    subObjects.push_back(obj);
+    if (RegexUtil::isPositiveInteger(str)) {
+        int index = std::stoi(str);
+        if (index >= 0 && index < subObjects.size()) {
+            subObjects.insert(subObjects.begin() + index, obj);
+        } else {
+            subObjects.push_back(obj);
+        }
+    } else {
+        subObjects.push_back(obj);
+    }
 }
 
 Type ObjectArray::getType()const {
@@ -38,10 +48,9 @@ void ObjectArray::destroy() {
 }
 
 Object* ObjectArray::get(const std::string& query) {
-    std::regex number("0|([1-9]\\d*)");
-    if (std::regex_match(query, number)) {
+    if (RegexUtil::isPositiveInteger(query)) {
         int index = std::stoi(query);
-        if (index < subObjects.size()) {
+        if (index >= 0 && index < subObjects.size()) {
             return subObjects[index];
         }
         return nullptr;
