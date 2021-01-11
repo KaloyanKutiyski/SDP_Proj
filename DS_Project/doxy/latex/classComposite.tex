@@ -1,0 +1,61 @@
+\hypertarget{classComposite}{}\doxysection{Composite Class Reference}
+\label{classComposite}\index{Composite@{Composite}}
+Inheritance diagram for Composite\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classComposite}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classComposite_a847a86662de5f1ae33b45a135ba3ffe6}\label{classComposite_a847a86662de5f1ae33b45a135ba3ffe6}} 
+std\+::string \mbox{\hyperlink{classComposite_a847a86662de5f1ae33b45a135ba3ffe6}{to\+String}} () const
+\begin{DoxyCompactList}\small\item\em used for retrieving data from primitive objects; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classComposite_a62d5c8a1ce7070728c8aa8da23a64580}\label{classComposite_a62d5c8a1ce7070728c8aa8da23a64580}} 
+void {\bfseries add\+Child} (const std\+::string \&, \mbox{\hyperlink{classObject}{Object}} $\ast$)
+\item 
+\mbox{\Hypertarget{classComposite_a92ffd35c8fe6b7dc49f8a4ee4519a810}\label{classComposite_a92ffd35c8fe6b7dc49f8a4ee4519a810}} 
+Type {\bfseries get\+Type} () const
+\item 
+\mbox{\Hypertarget{classComposite_a292fce9b7f8c3d5d25e7161f83923103}\label{classComposite_a292fce9b7f8c3d5d25e7161f83923103}} 
+std\+::pair$<$ std\+::string, \mbox{\hyperlink{classObject}{Object}} $\ast$ $>$ \mbox{\hyperlink{classComposite_a292fce9b7f8c3d5d25e7161f83923103}{get\+Nth}} (const int \&)
+\begin{DoxyCompactList}\small\item\em used for printing arrays\textquotesingle{} and composites\textquotesingle{} subelements in correct order. returns pair of name and value \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classComposite_ae0995f1b0053747c94068dbcb9561922}\label{classComposite_ae0995f1b0053747c94068dbcb9561922}} 
+std\+::string {\bfseries opener} () const
+\item 
+\mbox{\Hypertarget{classComposite_a247e6c16491486eb83453e1d08e97630}\label{classComposite_a247e6c16491486eb83453e1d08e97630}} 
+std\+::string {\bfseries closer} () const
+\item 
+\mbox{\Hypertarget{classComposite_a54893e1a4191de4c1d0b7ae6f517fbaf}\label{classComposite_a54893e1a4191de4c1d0b7ae6f517fbaf}} 
+void {\bfseries destroy} ()
+\item 
+\mbox{\Hypertarget{classComposite_a5ceab239cc79a980bd44825034816f95}\label{classComposite_a5ceab239cc79a980bd44825034816f95}} 
+\mbox{\hyperlink{classObject}{Object}} $\ast$ \mbox{\hyperlink{classComposite_a5ceab239cc79a980bd44825034816f95}{get}} (const std\+::string \&)
+\begin{DoxyCompactList}\small\item\em accesses subobjects from composites by key and from arrays by index \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classComposite_a589e1c94f374d8a838ff6349e5059ae4}\label{classComposite_a589e1c94f374d8a838ff6349e5059ae4}} 
+void \mbox{\hyperlink{classComposite_a589e1c94f374d8a838ff6349e5059ae4}{remove}} (const std\+::string \&, const bool \&)
+\begin{DoxyCompactList}\small\item\em removes a subobject. has a soft deletion mode where the dynamic memory is not deleted. soft mode used only in moving objects. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classComposite_a8ce4f1b3879121f66b1e40519728d1c2}\label{classComposite_a8ce4f1b3879121f66b1e40519728d1c2}} 
+void \mbox{\hyperlink{classComposite_a8ce4f1b3879121f66b1e40519728d1c2}{sort}} ()
+\begin{DoxyCompactList}\small\item\em sorts arrays containing only primitives of the same type; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classComposite_a78ca63c3f56994539fdf2e72560f8c06}\label{classComposite_a78ca63c3f56994539fdf2e72560f8c06}} 
+void \mbox{\hyperlink{classComposite_a78ca63c3f56994539fdf2e72560f8c06}{find\+By\+Key\+Helper}} (const std\+::string \&, std\+::vector$<$ \mbox{\hyperlink{classObject}{Object}} $\ast$ $>$ \&) const
+\begin{DoxyCompactList}\small\item\em if a composite has a subobject with the selected key it is added to the vector \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classComposite_a70a14d1602133e9b59cba4a34d981302}\label{classComposite_a70a14d1602133e9b59cba4a34d981302}} 
+int {\bfseries get\+Size} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line 4 of file composite.\+hpp.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Object/\+Composite/composite.\+hpp\item 
+Object/\+Composite/composite.\+cpp\end{DoxyCompactItemize}

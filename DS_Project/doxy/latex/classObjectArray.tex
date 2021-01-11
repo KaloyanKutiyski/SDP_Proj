@@ -1,0 +1,61 @@
+\hypertarget{classObjectArray}{}\doxysection{Object\+Array Class Reference}
+\label{classObjectArray}\index{ObjectArray@{ObjectArray}}
+Inheritance diagram for Object\+Array\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classObjectArray}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classObjectArray_aaea1117ac00b91d424233ae69ac9054e}\label{classObjectArray_aaea1117ac00b91d424233ae69ac9054e}} 
+std\+::string \mbox{\hyperlink{classObjectArray_aaea1117ac00b91d424233ae69ac9054e}{to\+String}} () const
+\begin{DoxyCompactList}\small\item\em used for retrieving data from primitive objects; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObjectArray_a02bd37210fa2345cfeb7201ef08665a8}\label{classObjectArray_a02bd37210fa2345cfeb7201ef08665a8}} 
+void \mbox{\hyperlink{classObjectArray_a02bd37210fa2345cfeb7201ef08665a8}{add\+Child}} (const std\+::string \&, \mbox{\hyperlink{classObject}{Object}} $\ast$)
+\begin{DoxyCompactList}\small\item\em can insert at specified index \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObjectArray_adc615c4cad3c3674e578c262134a68b4}\label{classObjectArray_adc615c4cad3c3674e578c262134a68b4}} 
+Type {\bfseries get\+Type} () const
+\item 
+\mbox{\Hypertarget{classObjectArray_a52efd1b7e17ca3f933e29a007b51cd01}\label{classObjectArray_a52efd1b7e17ca3f933e29a007b51cd01}} 
+std\+::pair$<$ std\+::string, \mbox{\hyperlink{classObject}{Object}} $\ast$ $>$ \mbox{\hyperlink{classObjectArray_a52efd1b7e17ca3f933e29a007b51cd01}{get\+Nth}} (const int \&)
+\begin{DoxyCompactList}\small\item\em used for printing arrays\textquotesingle{} and composites\textquotesingle{} subelements in correct order. returns pair of name and value \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObjectArray_af23e8ac1185e34b304c47dbacc7b3241}\label{classObjectArray_af23e8ac1185e34b304c47dbacc7b3241}} 
+std\+::string {\bfseries opener} () const
+\item 
+\mbox{\Hypertarget{classObjectArray_ae2916fe0f15bcf417ac69a83b3ac2bc3}\label{classObjectArray_ae2916fe0f15bcf417ac69a83b3ac2bc3}} 
+std\+::string {\bfseries closer} () const
+\item 
+\mbox{\Hypertarget{classObjectArray_ab988a94457dce51a62a04f0147f55220}\label{classObjectArray_ab988a94457dce51a62a04f0147f55220}} 
+void {\bfseries destroy} ()
+\item 
+\mbox{\Hypertarget{classObjectArray_a2debe18087c5ff99b5f8a4821c8ad231}\label{classObjectArray_a2debe18087c5ff99b5f8a4821c8ad231}} 
+\mbox{\hyperlink{classObject}{Object}} $\ast$ \mbox{\hyperlink{classObjectArray_a2debe18087c5ff99b5f8a4821c8ad231}{get}} (const std\+::string \&)
+\begin{DoxyCompactList}\small\item\em accesses subobjects from composites by key and from arrays by index \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObjectArray_a44e187b91859746a66b27fc24a429a0e}\label{classObjectArray_a44e187b91859746a66b27fc24a429a0e}} 
+void \mbox{\hyperlink{classObjectArray_a44e187b91859746a66b27fc24a429a0e}{remove}} (const std\+::string \&, const bool \&)
+\begin{DoxyCompactList}\small\item\em removes a subobject. has a soft deletion mode where the dynamic memory is not deleted. soft mode used only in moving objects. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObjectArray_aef7659b75eb7cc80e81479e0d62f8efa}\label{classObjectArray_aef7659b75eb7cc80e81479e0d62f8efa}} 
+void \mbox{\hyperlink{classObjectArray_aef7659b75eb7cc80e81479e0d62f8efa}{sort}} ()
+\begin{DoxyCompactList}\small\item\em sorts arrays containing only primitives of the same type; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObjectArray_a461b30795b220286e49f81f4e1ec796b}\label{classObjectArray_a461b30795b220286e49f81f4e1ec796b}} 
+void \mbox{\hyperlink{classObjectArray_a461b30795b220286e49f81f4e1ec796b}{find\+By\+Key\+Helper}} (const std\+::string \&, std\+::vector$<$ \mbox{\hyperlink{classObject}{Object}} $\ast$ $>$ \&) const
+\begin{DoxyCompactList}\small\item\em if a composite has a subobject with the selected key it is added to the vector \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObjectArray_a1dea36d946190586a2f5105e5ae989b5}\label{classObjectArray_a1dea36d946190586a2f5105e5ae989b5}} 
+int {\bfseries get\+Size} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line 4 of file object\+Array.\+hpp.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Object/\+Object\+Array/object\+Array.\+hpp\item 
+Object/\+Object\+Array/object\+Array.\+cpp\end{DoxyCompactItemize}

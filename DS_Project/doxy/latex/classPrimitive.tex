@@ -1,0 +1,64 @@
+\hypertarget{classPrimitive}{}\doxysection{Primitive Class Reference}
+\label{classPrimitive}\index{Primitive@{Primitive}}
+Inheritance diagram for Primitive\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classPrimitive}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPrimitive_a213aac00ab73ea475d81b69f85255871}\label{classPrimitive_a213aac00ab73ea475d81b69f85255871}} 
+{\bfseries Primitive} (const std\+::string \&)
+\item 
+\mbox{\Hypertarget{classPrimitive_aba882909c40fd9198f2ce359aa1eb752}\label{classPrimitive_aba882909c40fd9198f2ce359aa1eb752}} 
+std\+::string \mbox{\hyperlink{classPrimitive_aba882909c40fd9198f2ce359aa1eb752}{to\+String}} () const
+\begin{DoxyCompactList}\small\item\em used for retrieving data from primitive objects; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPrimitive_a7727568ccb0cc324df23ed67c4187727}\label{classPrimitive_a7727568ccb0cc324df23ed67c4187727}} 
+void {\bfseries add\+Child} (const std\+::string \&, \mbox{\hyperlink{classObject}{Object}} $\ast$)
+\item 
+\mbox{\Hypertarget{classPrimitive_ad0d8fc316e2b03d0beb60885a20fac18}\label{classPrimitive_ad0d8fc316e2b03d0beb60885a20fac18}} 
+Type {\bfseries get\+Type} () const
+\item 
+\mbox{\Hypertarget{classPrimitive_ac771b9c2dfa51cea31e51bd87614f38e}\label{classPrimitive_ac771b9c2dfa51cea31e51bd87614f38e}} 
+std\+::pair$<$ std\+::string, \mbox{\hyperlink{classObject}{Object}} $\ast$ $>$ \mbox{\hyperlink{classPrimitive_ac771b9c2dfa51cea31e51bd87614f38e}{get\+Nth}} (const int \&)
+\begin{DoxyCompactList}\small\item\em used for printing arrays\textquotesingle{} and composites\textquotesingle{} subelements in correct order. returns pair of name and value \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPrimitive_a137247d2690bd8ecfdd38ab2c7e48579}\label{classPrimitive_a137247d2690bd8ecfdd38ab2c7e48579}} 
+std\+::string {\bfseries opener} () const
+\item 
+\mbox{\Hypertarget{classPrimitive_af488b818f2a1bf0e49eb8265fa2e0eba}\label{classPrimitive_af488b818f2a1bf0e49eb8265fa2e0eba}} 
+std\+::string {\bfseries closer} () const
+\item 
+\mbox{\Hypertarget{classPrimitive_ac110b1f01e7d0b26ecbedf945898c6de}\label{classPrimitive_ac110b1f01e7d0b26ecbedf945898c6de}} 
+void {\bfseries destroy} ()
+\item 
+\mbox{\Hypertarget{classPrimitive_af55110ce494e2b37181f3b2d0a3ff4a4}\label{classPrimitive_af55110ce494e2b37181f3b2d0a3ff4a4}} 
+\mbox{\hyperlink{classObject}{Object}} $\ast$ \mbox{\hyperlink{classPrimitive_af55110ce494e2b37181f3b2d0a3ff4a4}{get}} (const std\+::string \&)
+\begin{DoxyCompactList}\small\item\em accesses subobjects from composites by key and from arrays by index \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPrimitive_a321b48a6d64036a92bab458871b5b314}\label{classPrimitive_a321b48a6d64036a92bab458871b5b314}} 
+void \mbox{\hyperlink{classPrimitive_a321b48a6d64036a92bab458871b5b314}{remove}} (const std\+::string \&, const bool \&)
+\begin{DoxyCompactList}\small\item\em removes a subobject. has a soft deletion mode where the dynamic memory is not deleted. soft mode used only in moving objects. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPrimitive_a12ba86e1b5534130ab6d9ca08fc4d18f}\label{classPrimitive_a12ba86e1b5534130ab6d9ca08fc4d18f}} 
+void \mbox{\hyperlink{classPrimitive_a12ba86e1b5534130ab6d9ca08fc4d18f}{sort}} ()
+\begin{DoxyCompactList}\small\item\em sorts arrays containing only primitives of the same type; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPrimitive_a94944ddede3e19fabcb840c70bc6d60f}\label{classPrimitive_a94944ddede3e19fabcb840c70bc6d60f}} 
+void \mbox{\hyperlink{classPrimitive_a94944ddede3e19fabcb840c70bc6d60f}{find\+By\+Key\+Helper}} (const std\+::string \&, std\+::vector$<$ \mbox{\hyperlink{classObject}{Object}} $\ast$ $>$ \&) const
+\begin{DoxyCompactList}\small\item\em if a composite has a subobject with the selected key it is added to the vector \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classPrimitive_a908398eda2dcb0fbfcf344eb0dc56435}\label{classPrimitive_a908398eda2dcb0fbfcf344eb0dc56435}} 
+int {\bfseries get\+Size} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line 3 of file primitive.\+hpp.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Object/\+Primitive/primitive.\+hpp\item 
+Object/\+Primitive/primitive.\+cpp\end{DoxyCompactItemize}

@@ -9,14 +9,14 @@ class UI {
     static const std::string endMessage;
     static const std::string helpMessage;
 
-    ///used for saving changes to the same file
+    //!used for saving changes to the same file
     std::string filePath;
 
-    ///removes leading and trailing whitespaces
+    //!removes leading and trailing whitespaces
     void trim(std::string&)const;
     std::string lower(const std::string&)const;
     
-    /// used to separate a word from the beginning of a string without using stringstreams
+    //! used to separate a word from the beginning of a string without using stringstreams
     std::string splitOff(std::string&, const bool&)const;
     
     bool isAllNum(const std::string&)const;
@@ -35,5 +35,6 @@ class UI {
     public:
     UI();
     void parseCommand(std::string&);
+    //!will run accept commands until 'quit' input
     void run();
 };

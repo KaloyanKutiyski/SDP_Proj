@@ -1,0 +1,120 @@
+\hypertarget{classObject}{}\doxysection{Object Class Reference}
+\label{classObject}\index{Object@{Object}}
+Inheritance diagram for Object\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classObject}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classObject_a89fee2453b0e7b4737afac15cf8ed039}\label{classObject_a89fee2453b0e7b4737afac15cf8ed039}} 
+virtual std\+::string \mbox{\hyperlink{classObject_a89fee2453b0e7b4737afac15cf8ed039}{to\+String}} () const =0
+\begin{DoxyCompactList}\small\item\em used for retrieving data from primitive objects; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObject_a8f129011d7205622de3baf2b71900b12}\label{classObject_a8f129011d7205622de3baf2b71900b12}} 
+virtual void {\bfseries add\+Child} (const std\+::string \&, \mbox{\hyperlink{classObject}{Object}} $\ast$)=0
+\item 
+\mbox{\Hypertarget{classObject_abf2bf683b7f5f11d5fa4cb131bcb6621}\label{classObject_abf2bf683b7f5f11d5fa4cb131bcb6621}} 
+virtual Type {\bfseries get\+Type} () const =0
+\item 
+\mbox{\Hypertarget{classObject_a14a9de228b958a549784081ffaa39048}\label{classObject_a14a9de228b958a549784081ffaa39048}} 
+virtual std\+::pair$<$ std\+::string, \mbox{\hyperlink{classObject}{Object}} $\ast$ $>$ \mbox{\hyperlink{classObject_a14a9de228b958a549784081ffaa39048}{get\+Nth}} (const int \&)=0
+\begin{DoxyCompactList}\small\item\em used for printing arrays\textquotesingle{} and composites\textquotesingle{} subelements in correct order. returns pair of name and value \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObject_aaefb0b07e38be424172b5f6c4307c06d}\label{classObject_aaefb0b07e38be424172b5f6c4307c06d}} 
+virtual std\+::string {\bfseries opener} () const =0
+\item 
+\mbox{\Hypertarget{classObject_a3162ad8fc60149c7be1c5dca4ed1d4b9}\label{classObject_a3162ad8fc60149c7be1c5dca4ed1d4b9}} 
+virtual std\+::string {\bfseries closer} () const =0
+\item 
+\mbox{\Hypertarget{classObject_a69e91bef2c9f048aa4509329dc44948e}\label{classObject_a69e91bef2c9f048aa4509329dc44948e}} 
+virtual void {\bfseries destroy} ()=0
+\item 
+\mbox{\Hypertarget{classObject_a0058eaaeb047455441af2933994687c4}\label{classObject_a0058eaaeb047455441af2933994687c4}} 
+virtual \mbox{\hyperlink{classObject}{Object}} $\ast$ \mbox{\hyperlink{classObject_a0058eaaeb047455441af2933994687c4}{get}} (const std\+::string \&)=0
+\begin{DoxyCompactList}\small\item\em accesses subobjects from composites by key and from arrays by index \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObject_af8cf779a4f70c90ff300948aa0f80a4b}\label{classObject_af8cf779a4f70c90ff300948aa0f80a4b}} 
+virtual void \mbox{\hyperlink{classObject_af8cf779a4f70c90ff300948aa0f80a4b}{remove}} (const std\+::string \&, const bool \&)=0
+\begin{DoxyCompactList}\small\item\em removes a subobject. has a soft deletion mode where the dynamic memory is not deleted. soft mode used only in moving objects. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObject_a5dedcfa771508242f1e075eef3346e42}\label{classObject_a5dedcfa771508242f1e075eef3346e42}} 
+virtual void \mbox{\hyperlink{classObject_a5dedcfa771508242f1e075eef3346e42}{sort}} ()=0
+\begin{DoxyCompactList}\small\item\em sorts arrays containing only primitives of the same type; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObject_a93e0ecd92f2549e667b5cc61d0a7afce}\label{classObject_a93e0ecd92f2549e667b5cc61d0a7afce}} 
+virtual void \mbox{\hyperlink{classObject_a93e0ecd92f2549e667b5cc61d0a7afce}{find\+By\+Key\+Helper}} (const std\+::string \&, std\+::vector$<$ \mbox{\hyperlink{classObject}{Object}} $\ast$ $>$ \&) const =0
+\begin{DoxyCompactList}\small\item\em if a composite has a subobject with the selected key it is added to the vector \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObject_a6f7bbf1000834afc28d3a96dbb472966}\label{classObject_a6f7bbf1000834afc28d3a96dbb472966}} 
+virtual int {\bfseries get\+Size} () const =0
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classObject_aa4e257e1e1ebd4fcfd6af0f52f2ab01e}\label{classObject_aa4e257e1e1ebd4fcfd6af0f52f2ab01e}} 
+static bool \mbox{\hyperlink{classObject_aa4e257e1e1ebd4fcfd6af0f52f2ab01e}{all\+Are\+Primitive}} (\mbox{\hyperlink{classObject}{Object}} $\ast$)
+\begin{DoxyCompactList}\small\item\em these static methods are used for sorting arrays \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classObject_a7534b220816eb75f4da6b62fd5fffe8f}\label{classObject_a7534b220816eb75f4da6b62fd5fffe8f}} 
+static bool {\bfseries all\+Are\+Booleans} (\mbox{\hyperlink{classObject}{Object}} $\ast$)
+\item 
+\mbox{\Hypertarget{classObject_a48f071a07447e3994ec3ab353942c78f}\label{classObject_a48f071a07447e3994ec3ab353942c78f}} 
+static bool {\bfseries all\+Are\+Numbers} (\mbox{\hyperlink{classObject}{Object}} $\ast$)
+\item 
+\mbox{\Hypertarget{classObject_a3e2ae65017f54bda3146a150456861f1}\label{classObject_a3e2ae65017f54bda3146a150456861f1}} 
+static bool {\bfseries all\+Are\+Strings} (\mbox{\hyperlink{classObject}{Object}} $\ast$)
+\item 
+static bool \mbox{\hyperlink{classObject_aae82e24dcb9890034a6a0a41bf09dfdd}{value\+Comparator}} (const \mbox{\hyperlink{classObject}{Object}} $\ast$, const \mbox{\hyperlink{classObject}{Object}} $\ast$)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line 8 of file object.\+hpp.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classObject_aae82e24dcb9890034a6a0a41bf09dfdd}\label{classObject_aae82e24dcb9890034a6a0a41bf09dfdd}} 
+\index{Object@{Object}!valueComparator@{valueComparator}}
+\index{valueComparator@{valueComparator}!Object@{Object}}
+\doxysubsubsection{\texorpdfstring{valueComparator()}{valueComparator()}}
+{\footnotesize\ttfamily bool Object\+::value\+Comparator (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classObject}{Object}} $\ast$}]{first,  }\item[{const \mbox{\hyperlink{classObject}{Object}} $\ast$}]{second }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+nulls get pushed at the end of an array;
+
+Definition at line 57 of file object.\+cpp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{57                                                                       \{}
+\DoxyCodeLine{58     std::string left = first-\/>\mbox{\hyperlink{classObject_a89fee2453b0e7b4737afac15cf8ed039}{toString}}();}
+\DoxyCodeLine{59     std::string right = second-\/>\mbox{\hyperlink{classObject_a89fee2453b0e7b4737afac15cf8ed039}{toString}}();}
+\DoxyCodeLine{60 }
+\DoxyCodeLine{62     \textcolor{keywordflow}{if} (right == \textcolor{stringliteral}{"{}null"{}}) \{}
+\DoxyCodeLine{63         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{64     \} \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (left == \textcolor{stringliteral}{"{}null"{}}) \{}
+\DoxyCodeLine{65         \textcolor{keywordflow}{return} right == \textcolor{stringliteral}{"{}null"{}};}
+\DoxyCodeLine{66     \}}
+\DoxyCodeLine{67 }
+\DoxyCodeLine{68     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (left == \textcolor{stringliteral}{"{}false"{}} || right == \textcolor{stringliteral}{"{}true"{}}) \{}
+\DoxyCodeLine{69         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{70     \} \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (left == \textcolor{stringliteral}{"{}true"{}} \&\& right == \textcolor{stringliteral}{"{}false"{}}) \{}
+\DoxyCodeLine{71         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{72     \}}
+\DoxyCodeLine{73     }
+\DoxyCodeLine{74     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (left.front() == \textcolor{charliteral}{'\(\backslash\)"{}'}) \{}
+\DoxyCodeLine{75         \textcolor{keywordflow}{return} strcmp(left.c\_str(), right.c\_str()) <= 0; }
+\DoxyCodeLine{76     \}}
+\DoxyCodeLine{77     }
+\DoxyCodeLine{78     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (isdigit(left.front()) || left.front() == \textcolor{charliteral}{'-\/'}) \{}
+\DoxyCodeLine{79         \textcolor{keywordflow}{return} RegexUtil::valueOfNumericString(left) <= RegexUtil::valueOfNumericString(right);}
+\DoxyCodeLine{80     \}}
+\DoxyCodeLine{81 }
+\DoxyCodeLine{82     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{83 \}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Object/object.\+hpp\item 
+Object/object.\+cpp\end{DoxyCompactItemize}

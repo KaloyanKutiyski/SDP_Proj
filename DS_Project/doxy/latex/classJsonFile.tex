@@ -1,0 +1,291 @@
+\hypertarget{classJsonFile}{}\doxysection{Json\+File Class Reference}
+\label{classJsonFile}\index{JsonFile@{JsonFile}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{classJsonFile_a15a3c8716d279d55bb45ba0c79130fae}{load}} (const std\+::string \&)
+\item 
+\mbox{\Hypertarget{classJsonFile_aa75629f3d426f8433c0fd88a0407a890}\label{classJsonFile_aa75629f3d426f8433c0fd88a0407a890}} 
+void \mbox{\hyperlink{classJsonFile_aa75629f3d426f8433c0fd88a0407a890}{attach\+Object\+From\+String}} (const std\+::string \&, const std\+::string \&, const std\+::string \&)
+\begin{DoxyCompactList}\small\item\em parses the string into an object and adds it to a selected element using a specified key \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classJsonFile_afba66b5d957a85793802f920f260a037}\label{classJsonFile_afba66b5d957a85793802f920f260a037}} 
+void \mbox{\hyperlink{classJsonFile_afba66b5d957a85793802f920f260a037}{remove\+Element}} (const std\+::string \&, const bool \&)
+\begin{DoxyCompactList}\small\item\em removes a subtree. can preserve the dynamic memory if the subtree is meing moved, otherwise it is deleted \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classJsonFile_a15a4f5ca5582af9fe0d33a9ed2072b1d}{move\+Element}} (const std\+::string \&, const std\+::string \&, const std\+::string \&)
+\begin{DoxyCompactList}\small\item\em moves the subtree of an element to another subtree. can be added with a (in case of the ui) user specified name \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classJsonFile_a75dff485e096d612a9cc9203946dff5c}{sort\+Array}} (const std\+::string \&)
+\begin{DoxyCompactList}\small\item\em sorts a specified single type array of primitives \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classJsonFile_a93500dbc0768c4ee7e44a438b99b74a8}{get\+All\+By\+Key}} (const std\+::string \&, const std\+::string \&) const
+\begin{DoxyCompactList}\small\item\em saves/prints all elenments with a certain name \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classJsonFile_a111c65b56ef720d64099e616680fbfae}{get\+Nth\+By\+Key}} (const std\+::string \&, const int \&, const std\+::string \&) const
+\begin{DoxyCompactList}\small\item\em saves/prints one element of a given name \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classJsonFile_a56540c5a755e009dd76b454d170a85e8}{change\+Element}} (const std\+::string \&, const std\+::string \&)
+\begin{DoxyCompactList}\small\item\em replaces the given element with what is parsed from the string \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classJsonFile_aac00cb4122757626c1d919274bed355f}{create\+From\+Index}} (const std\+::string \&)
+\begin{DoxyCompactList}\small\item\em bonus feature. generates composites based off a key; \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classJsonFile_ad37c5d89efc855aeb3994877a2754066}\label{classJsonFile_ad37c5d89efc855aeb3994877a2754066}} 
+void \mbox{\hyperlink{classJsonFile_ad37c5d89efc855aeb3994877a2754066}{print}} (const std\+::string \&, std\+::ostream \&, const bool \&) const
+\begin{DoxyCompactList}\small\item\em print to file \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classJsonFile_a881e360ff576dcacd1287b55ae37ff6d}\label{classJsonFile_a881e360ff576dcacd1287b55ae37ff6d}} 
+void \mbox{\hyperlink{classJsonFile_a881e360ff576dcacd1287b55ae37ff6d}{print}} (const std\+::string \&, const bool \&) const
+\begin{DoxyCompactList}\small\item\em print to console \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classJsonFile_ab91395964ab5144fc904b18932e57f3f}\label{classJsonFile_ab91395964ab5144fc904b18932e57f3f}} 
+void \mbox{\hyperlink{classJsonFile_ab91395964ab5144fc904b18932e57f3f}{print}} (const std\+::string \&, std\+::string \&, const bool \&) const
+\begin{DoxyCompactList}\small\item\em print to string. used for tests \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+
+Definition at line 6 of file Json\+File.\+hpp.
+
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classJsonFile_a56540c5a755e009dd76b454d170a85e8}\label{classJsonFile_a56540c5a755e009dd76b454d170a85e8}} 
+\index{JsonFile@{JsonFile}!changeElement@{changeElement}}
+\index{changeElement@{changeElement}!JsonFile@{JsonFile}}
+\doxysubsubsection{\texorpdfstring{changeElement()}{changeElement()}}
+{\footnotesize\ttfamily void Json\+File\+::change\+Element (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{dest,  }\item[{const std\+::string \&}]{src }\end{DoxyParamCaption})}
+
+
+
+replaces the given element with what is parsed from the string 
+
+the old element is removed and the new one added
+
+Definition at line 375 of file Json\+File.\+cpp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{375                                                                         \{}
+\DoxyCodeLine{376     \textcolor{keywordflow}{if} (!stringIsBalanced(src)) \{}
+\DoxyCodeLine{377         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}unbalanced source\(\backslash\)n"{}});}
+\DoxyCodeLine{378     \}}
+\DoxyCodeLine{379     \textcolor{keywordflow}{if} (!get(dest)) \{}
+\DoxyCodeLine{380         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}no such element\(\backslash\)n"{}});}
+\DoxyCodeLine{381     \}}
+\DoxyCodeLine{382 }
+\DoxyCodeLine{383     \mbox{\hyperlink{classObject}{Object}}* toAdd;}
+\DoxyCodeLine{384     std::stringstream sourceStream(src);}
+\DoxyCodeLine{385     toAdd = parse(sourceStream);}
+\DoxyCodeLine{386     }
+\DoxyCodeLine{387     \textcolor{keywordflow}{if} (!toAdd) \{}
+\DoxyCodeLine{388         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}invalid json input\(\backslash\)n"{}});}
+\DoxyCodeLine{389     \}}
+\DoxyCodeLine{390 }
+\DoxyCodeLine{391     \textcolor{keywordflow}{if} (dest.empty()) \{}
+\DoxyCodeLine{392         root-\/>destroy();}
+\DoxyCodeLine{393         \textcolor{keyword}{delete} root;}
+\DoxyCodeLine{394         root = toAdd;}
+\DoxyCodeLine{395         \textcolor{keywordflow}{return};}
+\DoxyCodeLine{396     \}}
+\DoxyCodeLine{397 }
+\DoxyCodeLine{399     \mbox{\hyperlink{classJsonFile_afba66b5d957a85793802f920f260a037}{removeElement}}(dest, \textcolor{keyword}{true});}
+\DoxyCodeLine{400     std::pair<std::string, std::string> beforeAndAfterDot = RegexUtil::splitAtLastDot(dest);}
+\DoxyCodeLine{401     get(beforeAndAfterDot.first)-\/>addChild(beforeAndAfterDot.second, toAdd);}
+\DoxyCodeLine{402 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{classJsonFile_aac00cb4122757626c1d919274bed355f}\label{classJsonFile_aac00cb4122757626c1d919274bed355f}} 
+\index{JsonFile@{JsonFile}!createFromIndex@{createFromIndex}}
+\index{createFromIndex@{createFromIndex}!JsonFile@{JsonFile}}
+\doxysubsubsection{\texorpdfstring{createFromIndex()}{createFromIndex()}}
+{\footnotesize\ttfamily void Json\+File\+::create\+From\+Index (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{creation\+Key }\end{DoxyParamCaption})}
+
+
+
+bonus feature. generates composites based off a key; 
+
+does not need further validation, it is called with a validated creation\+Key
+
+Definition at line 496 of file Json\+File.\+cpp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{496                                                            \{}
+\DoxyCodeLine{497     \textcolor{keywordflow}{if} (!RegexUtil::isValidCreationKey(creationKey)) \{}
+\DoxyCodeLine{498         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}invalid creaton key\(\backslash\)n"{}});}
+\DoxyCodeLine{499     \}}
+\DoxyCodeLine{500 }
+\DoxyCodeLine{501     \textcolor{keywordflow}{if} (!root) \{}
+\DoxyCodeLine{502         root = \textcolor{keyword}{new} \mbox{\hyperlink{classComposite}{Composite}}();}
+\DoxyCodeLine{503     \}}
+\DoxyCodeLine{505     createFromIndex(root, creationKey, \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{506 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{classJsonFile_a93500dbc0768c4ee7e44a438b99b74a8}\label{classJsonFile_a93500dbc0768c4ee7e44a438b99b74a8}} 
+\index{JsonFile@{JsonFile}!getAllByKey@{getAllByKey}}
+\index{getAllByKey@{getAllByKey}!JsonFile@{JsonFile}}
+\doxysubsubsection{\texorpdfstring{getAllByKey()}{getAllByKey()}}
+{\footnotesize\ttfamily void Json\+File\+::get\+All\+By\+Key (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key,  }\item[{const std\+::string \&}]{destination }\end{DoxyParamCaption}) const}
+
+
+
+saves/prints all elenments with a certain name 
+
+creates a temporary json array to facilitate printing
+
+defaults to printing in console if there is no filename given
+
+Definition at line 461 of file Json\+File.\+cpp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{461                                                                                   \{}
+\DoxyCodeLine{462     std::vector<Object*> objs = findByKey(key);}
+\DoxyCodeLine{463 }
+\DoxyCodeLine{465     \mbox{\hyperlink{classObject}{Object}}* array = \textcolor{keyword}{new} \mbox{\hyperlink{classObjectArray}{ObjectArray}}();}
+\DoxyCodeLine{466     \textcolor{keywordflow}{for} (\mbox{\hyperlink{classObject}{Object}}* obj : objs) \{}
+\DoxyCodeLine{467         array-\/>addChild(\textcolor{stringliteral}{"{}"{}}, obj);}
+\DoxyCodeLine{468     \}}
+\DoxyCodeLine{469 }
+\DoxyCodeLine{471     std::ofstream out(destination);}
+\DoxyCodeLine{472     \textcolor{keywordflow}{if} (destination.empty()) \{}
+\DoxyCodeLine{473         print(array, std::cout, \textcolor{keyword}{true});}
+\DoxyCodeLine{474     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{475         print(array, out, \textcolor{keyword}{true});}
+\DoxyCodeLine{476     \}}
+\DoxyCodeLine{477 }
+\DoxyCodeLine{478     \textcolor{keyword}{delete} array;}
+\DoxyCodeLine{479 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{classJsonFile_a111c65b56ef720d64099e616680fbfae}\label{classJsonFile_a111c65b56ef720d64099e616680fbfae}} 
+\index{JsonFile@{JsonFile}!getNthByKey@{getNthByKey}}
+\index{getNthByKey@{getNthByKey}!JsonFile@{JsonFile}}
+\doxysubsubsection{\texorpdfstring{getNthByKey()}{getNthByKey()}}
+{\footnotesize\ttfamily void Json\+File\+::get\+Nth\+By\+Key (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{key,  }\item[{const int \&}]{index,  }\item[{const std\+::string \&}]{destination }\end{DoxyParamCaption}) const}
+
+
+
+saves/prints one element of a given name 
+
+defaults to printing in console
+
+Definition at line 481 of file Json\+File.\+cpp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{481                                                                                                     \{}
+\DoxyCodeLine{482     std::vector<Object*> objs = findByKey(key);}
+\DoxyCodeLine{483     \textcolor{keywordflow}{if} (index >= 0 \&\& index < objs.size()) \{}
+\DoxyCodeLine{485         \textcolor{keywordflow}{if} (destination.empty()) \{}
+\DoxyCodeLine{486             print(objs[index], std::cout, \textcolor{keyword}{true});}
+\DoxyCodeLine{487         \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{488             std::ofstream out(destination);}
+\DoxyCodeLine{489             print(objs[index], out, \textcolor{keyword}{true});}
+\DoxyCodeLine{490         \}}
+\DoxyCodeLine{491     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{492         \textcolor{keywordflow}{throw} \textcolor{keyword}{new} std::out\_of\_range(\textcolor{stringliteral}{"{}invalid index\(\backslash\)n"{}});}
+\DoxyCodeLine{493     \}}
+\DoxyCodeLine{494 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{classJsonFile_a15a3c8716d279d55bb45ba0c79130fae}\label{classJsonFile_a15a3c8716d279d55bb45ba0c79130fae}} 
+\index{JsonFile@{JsonFile}!load@{load}}
+\index{load@{load}!JsonFile@{JsonFile}}
+\doxysubsubsection{\texorpdfstring{load()}{load()}}
+{\footnotesize\ttfamily void Json\+File\+::load (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{file\+Path }\end{DoxyParamCaption})}
+
+guarantees the existance and balance of file. the latter significantly simplifies parsing
+
+overrides the previously loaded file
+
+Definition at line 145 of file Json\+File.\+cpp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{145                                              \{}
+\DoxyCodeLine{146     std::ifstream in(filePath);}
+\DoxyCodeLine{148     \textcolor{keywordflow}{if} (!in || !in.good()) \{}
+\DoxyCodeLine{149         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}bad file\(\backslash\)n"{}});}
+\DoxyCodeLine{150     \}}
+\DoxyCodeLine{151     \textcolor{keywordflow}{if} (!(fileIsBalanced(filePath))) \{}
+\DoxyCodeLine{152         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}unbalanced file\(\backslash\)n"{}});}
+\DoxyCodeLine{153     \}}
+\DoxyCodeLine{154     \mbox{\hyperlink{classObject}{Object}}* temp = parse(in);}
+\DoxyCodeLine{155     \textcolor{keywordflow}{if} (temp) \{}
+\DoxyCodeLine{157         \textcolor{keywordflow}{if} (root) \{}
+\DoxyCodeLine{158             root-\/>destroy();}
+\DoxyCodeLine{159             \textcolor{keyword}{delete} root;}
+\DoxyCodeLine{160         \}}
+\DoxyCodeLine{161         root = temp;}
+\DoxyCodeLine{162     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{163         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}file does not match json file\(\backslash\)n"{}});}
+\DoxyCodeLine{164     \}}
+\DoxyCodeLine{165 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{classJsonFile_a15a4f5ca5582af9fe0d33a9ed2072b1d}\label{classJsonFile_a15a4f5ca5582af9fe0d33a9ed2072b1d}} 
+\index{JsonFile@{JsonFile}!moveElement@{moveElement}}
+\index{moveElement@{moveElement}!JsonFile@{JsonFile}}
+\doxysubsubsection{\texorpdfstring{moveElement()}{moveElement()}}
+{\footnotesize\ttfamily void Json\+File\+::move\+Element (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{src,  }\item[{const std\+::string \&}]{dest,  }\item[{const std\+::string \&}]{name }\end{DoxyParamCaption})}
+
+
+
+moves the subtree of an element to another subtree. can be added with a (in case of the ui) user specified name 
+
+does not delete the dynamic memory
+
+Definition at line 419 of file Json\+File.\+cpp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{419                                                                                              \{}
+\DoxyCodeLine{420     \textcolor{keywordflow}{if} (src.empty() || src == dest.substr(0, src.length())) \{}
+\DoxyCodeLine{421         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}invalid source location. source cannot be same or a subelement of destination \(\backslash\)n"{}});}
+\DoxyCodeLine{422     \}}
+\DoxyCodeLine{423 }
+\DoxyCodeLine{424     \mbox{\hyperlink{classObject}{Object}}* destination = get(dest);}
+\DoxyCodeLine{425     \mbox{\hyperlink{classObject}{Object}}* source = get(src); }
+\DoxyCodeLine{426 }
+\DoxyCodeLine{427     \textcolor{keywordflow}{if} (!destination || !source) \{}
+\DoxyCodeLine{428         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}no such element\(\backslash\)n"{}});}
+\DoxyCodeLine{429     \}}
+\DoxyCodeLine{430 }
+\DoxyCodeLine{431     \textcolor{keywordflow}{if} (destination-\/>getType() == PRIMITIVE) \{}
+\DoxyCodeLine{432         upliftPrimitive(destination, dest);}
+\DoxyCodeLine{433     \} \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (destination-\/>getType() == COMPOSITE \&\& (!RegexUtil::isStringPrimitive(name) || destination-\/>\mbox{\hyperlink{classObject_a0058eaaeb047455441af2933994687c4}{get}}(name))) \{}
+\DoxyCodeLine{434         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}invalid name or name present at destination\(\backslash\)n"{}});}
+\DoxyCodeLine{435     \}}
+\DoxyCodeLine{436 }
+\DoxyCodeLine{438     \mbox{\hyperlink{classJsonFile_afba66b5d957a85793802f920f260a037}{removeElement}}(src, \textcolor{keyword}{false});}
+\DoxyCodeLine{439     destination-\/>addChild(name, source);}
+\DoxyCodeLine{440 \}}
+
+\end{DoxyCode}
+\mbox{\Hypertarget{classJsonFile_a75dff485e096d612a9cc9203946dff5c}\label{classJsonFile_a75dff485e096d612a9cc9203946dff5c}} 
+\index{JsonFile@{JsonFile}!sortArray@{sortArray}}
+\index{sortArray@{sortArray}!JsonFile@{JsonFile}}
+\doxysubsubsection{\texorpdfstring{sortArray()}{sortArray()}}
+{\footnotesize\ttfamily void Json\+File\+::sort\+Array (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{str }\end{DoxyParamCaption})}
+
+
+
+sorts a specified single type array of primitives 
+
+if the object is unsortable it simply does nothing
+
+Definition at line 442 of file Json\+File.\+cpp.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{442                                              \{}
+\DoxyCodeLine{443     \mbox{\hyperlink{classObject}{Object}}* obj = get(str);}
+\DoxyCodeLine{445     \textcolor{keywordflow}{if} (obj) \{}
+\DoxyCodeLine{446         obj-\/>\mbox{\hyperlink{classObject_a5dedcfa771508242f1e075eef3346e42}{sort}}();}
+\DoxyCodeLine{447     \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{448         \textcolor{keywordflow}{throw} std::invalid\_argument(\textcolor{stringliteral}{"{}no such element"{}});}
+\DoxyCodeLine{449     \}}
+\DoxyCodeLine{450 \}}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+JSON\+\_\+\+File/Json\+File.\+hpp\item 
+JSON\+\_\+\+File/Json\+File.\+cpp\end{DoxyCompactItemize}

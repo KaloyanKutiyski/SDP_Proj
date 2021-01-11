@@ -4,7 +4,7 @@
 class Composite: public Object {
     std::unordered_map<std::string, Object*> subObjects;
 
-    ///the keys of subobjects by insertion order. Used for printing in the correct order.
+    //!the keys of subobjects by insertion order. Used for printing in the correct order.
     std::vector<std::string> insertionOrder;
 
     void constructorHelper(const std::string&);

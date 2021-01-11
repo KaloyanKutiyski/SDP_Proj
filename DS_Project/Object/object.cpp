@@ -58,7 +58,7 @@ bool Object::valueComparator(const Object* first, const Object* second) {
     std::string left = first->toString();
     std::string right = second->toString();
 
-    ///nulls get pushed at the end of an array;
+    //!nulls get pushed at the end of an array;
     if (right == "null") {
         return true;
     } else if (left == "null") {

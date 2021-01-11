@@ -7,7 +7,7 @@ std::string ObjectArray::toString()const {
     return "";
 }
 
-///can insert at specified index
+//!can insert at specified index
 void ObjectArray::addChild (const std::string& str, Object* obj) {
     if (RegexUtil::isPositiveInteger(str)) {
         int index = std::stoi(str);
