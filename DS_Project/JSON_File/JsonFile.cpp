@@ -105,8 +105,8 @@ Object* JsonFile::parse(std::istream& in) {
                 //! failstate:
                 //! we have reached a ',' meaning next object expected or ']' or '}' meaning end of object
                 //! yet the data before that could not be parsed
-                root->destroy();
-                delete root;
+                res->destroy();
+                delete res;
                 return nullptr;
             }
             

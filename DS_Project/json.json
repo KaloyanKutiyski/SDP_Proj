@@ -195,7 +195,7 @@
                     "label": "Zoom Out"
                 },
                 {
-                    "id": "OriginalView",
+                    "id":: "OriginalView",
                     "label": "Original View"
                 },
                 null,
